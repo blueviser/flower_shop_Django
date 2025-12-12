@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Цветочный магазин - Доставляем красоту{% endblock %}
+
+{% block content %}
+<!-- Герой-секция -->
+<div class="hero text-center mb-5">
+    <div class="container py-5">
+        <h1 class="display-4 fw-bold mb-3">Цветы, которые говорят за вас</h1>
+        <p class="lead mb-4">Самые свежие букеты с доставкой по городу в день заказа</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-shop"></i> Смотреть каталог
+            </a>
+            <a href="#categories" class="btn btn-outline-light btn-lg px-4">
+                <i class="bi bi-grid"></i> Категории
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Преимущества -->
+<div class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-3 col-sm-6 text-center">
+            <div class="p-4 rounded bg-light h-100">
+                <i class="bi bi-truck display-6 text-primary mb-3"></i>
+                <h5>Быстрая доставка</h5>
+                <p class="small text-muted">Доставим в день заказа при оформлении до 16:00</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center">
+            <div class="p-4 rounded bg-light h-100">
+                <i class="bi bi-flower2 display-6 text-primary mb-3"></i>
+                <h5>Свежие цветы</h5>
+                <p class="small text-muted">Только свежие цветы от проверенных поставщиков</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center">
+            <div class="p-4 rounded bg-light h-100">
+                <i class="bi bi-gift display-6 text-primary mb-3"></i>
+                <h5>Подарочная упаковка</h5>
+                <p class="small text-muted">Бесплатная праздничная упаковка для всех букетов</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center">
+            <div class="p-4 rounded bg-light h-100">
+                <i class="bi bi-shield-check display-6 text-primary mb-3"></i>
+                <h5>Гарантия качества</h5>
+                <p class="small text-muted">Если цветы завянут в течение 3 дней - вернем деньги</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Категории -->
+<div class="container mb-5" id="categories">
+    <h2 class="text-center mb-4">Популярные категории</h2>
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-4 col-sm-6">
+            <a href="{% url 'shop:product_list_by_category' category.slug %}" 
+               class="text-decoration-none">
+                <div class="card category-card h-100">
+                    {% if category.image %}
+                    <img src="{{ category.image.url }}" class="card-img-top" 
+                         alt="{{ category.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" 
+                         style="height: 200px;">
+                        <i class="bi bi-flower1 display-4 text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{ category.name }}</h5>
+                        <p class="card-text text-muted small">Смотреть коллекцию →</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Популярные товары -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Популярные букеты</h2>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-primary">
+            Весь каталог <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    
+    {% if featured_products %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {% for product in featured_products %}
+        <div class="col">
+            <div class="card h-100 product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" 
+                     alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" 
+                     style="height: 250px;">
+                    <i class="bi bi-image text-muted display-4"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small">{{ product.category.name }}</p>
+                    <p class="card-text flex-grow-1">{{ product.description|truncatechars:60 }}</p>
+                    
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h4 text-primary">{{ product.price }} ₽</span>
+                            {% if product.available %}
+                            <span class="badge bg-success">В наличии</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'shop:product_detail' product.slug %}" 
+                               class="btn btn-outline-primary">Подробнее</a>
+                            
+                            {% if product.available %}
+                            <form action="{% url 'shop:cart_add' product.id %}" method="post" class="d-grid">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-cart-plus"></i> В корзину
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-flower1 display-1 text-muted"></i>
+        <p class="lead mt-3">Товары скоро появятся</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Призыв к действию -->
+<div class="bg-light py-5 mb-5">
+    <div class="container text-center">
+        <h2 class="mb-3">Нужен особенный букет?</h2>
+        <p class="lead mb-4">Мы создадим индивидуальную композицию по вашему эскизу или описанию</p>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#consultModal">
+            <i class="bi bi-chat-dots"></i> Заказать консультацию
+        </button>
+    </div>
+</div>
+
+<!-- Модальное окно консультации -->
+<div class="modal fade" id="consultModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Заказать консультацию</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Наш флорист свяжется с вами в течение 15 минут для обсуждения деталей букета.</p>
+                <div class="mb-3">
+                    <label class="form-label">Ваш телефон</label>
+                    <input type="tel" class="form-control" placeholder="+7 (999) 123-45-67">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary">Отправить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

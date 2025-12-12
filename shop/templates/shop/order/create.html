@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа - Цветочный магазин{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Прогресс оформления -->
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
+                             style="width: 50px; height: 50px;">
+                            <i class="bi bi-cart-check fs-4"></i>
+                        </div>
+                        <span class="fw-bold">Корзина</span>
+                    </div>
+                    
+                    <div class="flex-grow-1">
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
+                             style="width: 50px; height: 50px;">
+                            <i class="bi bi-person fs-4"></i>
+                        </div>
+                        <span class="fw-bold">Данные</span>
+                    </div>
+                    
+                    <div class="flex-grow-1">
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto mb-2" 
+                             style="width: 50px; height: 50px;">
+                            <i class="bi bi-check2 fs-4 text-muted"></i>
+                        </div>
+                        <span class="text-muted">Подтверждение</span>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="mb-4">Оформление заказа</h1>
+
+            <div class="row">
+                <!-- Форма заказа -->
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> Контактная информация</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action=".">
+                                {% csrf_token %}
+                                
+                                {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>Пожалуйста, исправьте ошибки:</strong>
+                                    <ul class="mb-0">
+                                        {% for field, errors in form.errors.items %}
+                                            {% for error in errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Имя *</label>
+                                        {{ form.first_name }}
+                                        {% if form.first_name.errors %}
+                                        <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Фамилия *</label>
+                                        {{ form.last_name }}
+                                        {% if form.last_name.errors %}
+                                        <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email *</label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                        <div class="text-danger small">{{ form.email.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Телефон *</label>
+                                        {{ form.phone }}
+                                        <div class="form-text">Пример: +7 (999) 123-45-67</div>
+                                        {% if form.phone.errors %}
+                                        <div class="text-danger small">{{ form.phone.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Адрес доставки *</label>
+                                    {{ form.address }}
+                                    <div class="form-text">Укажите полный адрес: город, улица, дом, квартира</div>
+                                    {% if form.address.errors %}
+                                    <div class="text-danger small">{{ form.address.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Комментарий к заказу</label>
+                                    <textarea name="comment" class="form-control" rows="3" 
+                                              placeholder="Например: позвонить за час до доставки..."></textarea>
+                                </div>
+                                
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                    <label class="form-check-label" for="agreeTerms">
+                                        Я согласен с <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                            условиями обработки персональных данных
+                                        </a> *
+                                    </label>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-check-circle"></i> Подтвердить заказ
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Способы оплаты -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-credit-card"></i> Способы оплаты</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="border rounded p-3 h-100">
+                                        <i class="bi bi-cash-coin display-6 text-success"></i>
+                                        <h6 class="mt-2">Наличными</h6>
+                                        <p class="small text-muted">Курьеру при получении</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="border rounded p-3 h-100">
+                                        <i class="bi bi-credit-card display-6 text-primary"></i>
+                                        <h6 class="mt-2">Картой онлайн</h6>
+                                        <p class="small text-muted">Безопасная оплата</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="border rounded p-3 h-100">
+                                        <i class="bi bi-phone display-6 text-info"></i>
+                                        <h6 class="mt-2">SBP</h6>
+                                        <p class="small text-muted">Через СБП</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Итоги заказа -->
+                <div class="col-md-4">
+                    <div class="card sticky-top" style="top: 100px;">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="bi bi-receipt"></i> Ваш заказ</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6>Товары:</h6>
+                                {% for item in cart %}
+                                <div class="d-flex justify-content-between small mb-2">
+                                    <span>{{ item.product.name }} x{{ item.quantity }}</span>
+                                    <span>{{ item.total_price }} ₽</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>Стоимость товаров:</span>
+                                    <span>{{ cart.get_total_price }} ₽</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Доставка:</span>
+                                    {% if cart.get_total_price >= 5000 %}
+                                    <span class="text-success">Бесплатно</span>
+                                    {% else %}
+                                    <span>500 ₽</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>К оплате:</span>
+                                <span class="text-success">
+                                    {% if cart.get_total_price >= 5000 %}
+                                        {{ cart.get_total_price }} ₽
+                                    {% else %}
+                                        {{ cart.get_total_price|add:500 }} ₽
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="alert alert-info mt-3 small">
+                                <i class="bi bi-clock"></i>
+                                <strong>Время доставки:</strong> сегодня с 10:00 до 22:00
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Помощь -->
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h6><i class="bi bi-question-circle"></i> Нужна помощь?</h6>
+                            <p class="small mb-2">
+                                <i class="bi bi-telephone"></i> +7 (999) 123-45-67
+                            </p>
+                            <p class="small mb-0">
+                                <i class="bi bi-clock"></i> Ежедневно с 9:00 до 21:00
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно с условиями -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Условия обработки персональных данных</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Мы обрабатываем ваши персональные данные исключительно для выполнения вашего заказа.</p>
+                <p>Предоставляя свои данные, вы соглашаетесь на их обработку в соответствии с Федеральным законом №152-ФЗ «О персональных данных».</p>
+                <p>Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законодательством.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
