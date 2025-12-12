@@ -1,7 +1,7 @@
 # flower_shop_Django
 
 ## Установка
-
+```
 # Клонируйте репозиторий
 git clone https://github.com/blueviser/flower_shop_Django.git
 cd flower_shop_Django
