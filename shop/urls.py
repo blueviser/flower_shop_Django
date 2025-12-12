@@ -4,12 +4,19 @@ from . import views
 app_name = 'shop'
 
 urlpatterns = [
+    # Главная страница
     path('', views.home, name='home'),
+    
+    # Каталог товаров
     path('products/', views.ProductListView.as_view(), name='product_list'),
     path('products/<slug:category_slug>/', views.ProductListView.as_view(), name='product_list_by_category'),
     path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
+    
+    # Корзина
     path('cart/', views.cart_detail, name='cart_detail'),
     path('cart/add/<int:product_id>/', views.cart_add, name='cart_add'),
     path('cart/remove/<int:product_id>/', views.cart_remove, name='cart_remove'),
+    
+    # Заказы
     path('order/create/', views.order_create, name='order_create'),
 ]
