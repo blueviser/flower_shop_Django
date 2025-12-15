@@ -3,124 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Цветочный магазин{% endblock %}</title>
+    <title>{% block title %}Букетная мастерская | Цветы с доставкой{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                        url('https://images.unsplash.com/photo-1487956382158-bb926046304a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 100px 0;
+        /* Дополнительные стили для специфичных элементов */
+        .navbar-toggler {
+            border-color: #e98a9f;
         }
-        .product-card {
-            transition: transform 0.3s;
-            border: none;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 2px rgba(233, 138, 159, 0.5);
         }
-        .product-card:hover {
-            transform: translateY(-5px);
+        
+        .cart-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            font-size: 0.7rem;
+            padding: 3px 7px;
         }
-        .category-card {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
+        
+        /* Кастомные стили для цветочных иконок */
+        .flower-decor {
+            color: #e98a9f;
+            opacity: 0.8;
         }
-        .category-card-overlay {
-            position: absolute;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            width: 100%;
-            padding: 10px;
-        }
-        .footer {
-            background: #f8f9fa;
-            padding: 40px 0;
+        
+        /* Анимация для появления товаров */
+        .product-enter {
+            animation: fadeIn 0.6s ease-out;
         }
     </style>
 </head>
 <body>
     <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{% url 'shop:home' %}">
-                <i class="bi bi-flower1 me-2"></i>Цветочный магазин
+            <a class="navbar-brand fw-bold" href="{% url 'shop:home' %}">
+                <i class="bi bi-flower1 me-2"></i>Цветочная галерея
             </a>
             
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <!-- ВАРИАНТ 1: с пространством имен shop: -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'shop:home' %}">
-                            <i class="bi bi-house-door"></i> Главная
+                            <i class="bi bi-house-door me-1"></i> Главная
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'shop:product_list' %}">
-                            <i class="bi bi-shop"></i> Каталог
+                            <i class="bi bi-flower2 me-1"></i> Каталог
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gift me-1"></i> Подарки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-truck me-1"></i> Доставка
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-chat-dots me-1"></i> Контакты
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex">
-                    <a href="{% url 'shop:cart_detail' %}" class="btn btn-outline-primary position-relative">
+                
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'shop:cart_detail' %}" class="btn btn-outline-primary position-relative me-3">
                         <i class="bi bi-cart3"></i> Корзина
                         {% with total_items=cart|length %}
                             {% if total_items > 0 %}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge">
                                     {{ total_items }}
                                 </span>
                             {% endif %}
                         {% endwith %}
                     </a>
+                    
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+                               data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-2"></i>
+                                <span>{{ user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Профиль</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Заказы</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Выйти</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-person"></i> Войти
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 
-    <div style="padding-top: 80px;">
-        {% block content %}{% endblock %}
-    </div>
+    <!-- Основной контент -->
+    <main>
+        <div style="padding-top: 90px;">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
     <!-- Футер -->
-    <footer class="footer mt-5">
+    <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h5>Цветочный магазин</h5>
-                    <p>Доставляем красоту и настроение с 2010 года.</p>
+                <div class="col-lg-4 mb-4">
+                    <h5>Цветочная галерея</h5>
+                    <p class="mt-3">Создаем красоту с 2010 года. Более 10 000 довольных клиентов и 5000 исполненных желаний.</p>
+                    <div class="mt-4">
+                        <a href="#" class="btn btn-outline-primary me-2 mb-2">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary me-2 mb-2">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary me-2 mb-2">
+                            <i class="bi bi-telegram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary mb-2">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-4">
+                
+                <div class="col-lg-4 mb-4">
                     <h5>Контакты</h5>
-                    <p><i class="bi bi-telephone"></i> +7 (999) 123-45-67</p>
-                    <p><i class="bi bi-envelope"></i> info@flower-shop.ru</p>
+                    <div class="mt-3">
+                        <p><i class="bi bi-geo-alt me-2"></i> г. Москва, ул. Цветочная, 15</p>
+                        <p><i class="bi bi-telephone me-2"></i> +7 (999) 123-45-67</p>
+                        <p><i class="bi bi-envelope me-2"></i> info@flower-gallery.ru</p>
+                        <p><i class="bi bi-clock me-2"></i> Ежедневно 9:00 - 21:00</p>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Мы в соцсетях</h5>
-                    <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="btn btn-outline-primary"><i class="bi bi-telegram"></i></a>
+                
+                <div class="col-lg-4 mb-4">
+                    <h5>Быстрые ссылки</h5>
+                    <div class="mt-3">
+                        <p><a href="{% url 'shop:product_list' %}" class="text-light text-decoration-none">Все букеты</a></p>
+                        <p><a href="#" class="text-light text-decoration-none">Свадебная флористика</a></p>
+                        <p><a href="#" class="text-light text-decoration-none">Корпоративные заказы</a></p>
+                        <p><a href="#" class="text-light text-decoration-none">Услуги оформления</a></p>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="footer-bottom text-center pt-4">
+                <p class="mb-0">&copy; 2024 Цветочная галерея. Все права защищены.</p>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Плавная прокрутка
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
         // Обновление количества товара в корзине
         document.querySelectorAll('.update-quantity').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 const form = this.closest('form');
-                form.submit();
+                const quantityInput = form.querySelector('input[name="quantity"]');
+                const submitBtn = form.querySelector('button[type="submit"]');
+                
+                // Добавляем анимацию на кнопку
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    form.submit();
+                }, 300);
             });
         });
+
+        // Анимация при добавлении в корзину
+        document.querySelectorAll('form[action*="cart_add"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="bi bi-check2"></i> Добавлено';
+                    submitBtn.classList.remove('btn-primary');
+                    submitBtn.classList.add('btn-success');
+                    
+                    setTimeout(() => {
+                        submitBtn.innerHTML = '<i class="bi bi-cart-plus"></i> В корзину';
+                        submitBtn.classList.remove('btn-success');
+                        submitBtn.classList.add('btn-primary');
+                    }, 1500);
+                }
+            });
+        });
+
+        // Показывать/скрывать навигацию при скролле
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
     </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

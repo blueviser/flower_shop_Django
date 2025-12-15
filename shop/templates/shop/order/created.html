@@ -1,149 +1,275 @@
 {% extends 'base.html' %}
 
-{% block title %}Заказ оформлен - Цветочный магазин{% endblock %}
+{% block title %}Заказ оформлен | Цветочная галерея{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white text-center">
-                    <h2 class="mb-0">
-                        <i class="bi bi-check-circle"></i> Заказ успешно оформлен!
-                    </h2>
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-success text-white border-0 py-4">
+                    <div class="text-center">
+                        <i class="bi bi-check-circle display-4 mb-3"></i>
+                        <h2 class="mb-0">Заказ успешно оформлен!</h2>
+                    </div>
                 </div>
                 
-                <div class="card-body text-center py-5">
-                    <div class="mb-4">
-                        <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" 
-                             style="width: 100px; height: 100px;">
-                            <i class="bi bi-check2 display-4 text-success"></i>
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-4" 
+                             style="width: 120px; height: 120px;">
+                            <i class="bi bi-check2 display-3 text-success"></i>
                         </div>
                         
                         <h3 class="text-success mb-3">Спасибо за ваш заказ!</h3>
-                        <p class="lead">Заказ № <strong>{{ order.id }}</strong> успешно создан.</p>
+                        <p class="lead mb-0">Заказ № <strong class="fs-3">{{ order.id }}</strong> успешно создан.</p>
                     </div>
                     
-                    <div class="row justify-content-center mb-4">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-body text-start">
-                                    <h5 class="card-title">Детали заказа:</h5>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Номер заказа:</div>
-                                        <div class="col-sm-8 fw-bold">{{ order.id }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Дата:</div>
-                                        <div class="col-sm-8">{{ order.created|date:"d.m.Y H:i" }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Имя:</div>
-                                        <div class="col-sm-8">{{ order.first_name }} {{ order.last_name }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Email:</div>
-                                        <div class="col-sm-8">{{ order.email }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Телефон:</div>
-                                        <div class="col-sm-8">{{ order.phone }}</div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-4 text-muted">Адрес:</div>
-                                        <div class="col-sm-8">{{ order.address }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row justify-content-center mb-4">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-body text-start">
-                                    <h5 class="card-title">Состав заказа:</h5>
-                                    
-                                    {% for item in order.items.all %}
-                                    <div class="d-flex justify-content-between mb-2">
+                    <!-- Информация о заказе -->
+                    <div class="card border-0 bg-light mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-4">
+                                <i class="bi bi-receipt me-2"></i> Детали заказа
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-hash text-primary me-3 fs-5"></i>
                                         <div>
-                                            {{ item.product.name }} 
-                                            <span class="text-muted">x{{ item.quantity }}</span>
+                                            <small class="text-muted d-block">Номер заказа</small>
+                                            <strong class="fs-5">{{ order.id }}</strong>
                                         </div>
-                                        <div class="fw-bold">{{ item.get_cost }} ₽</div>
                                     </div>
-                                    {% endfor %}
-                                    
-                                    <hr>
-                                    
-                                    <div class="d-flex justify-content-between fw-bold fs-5">
-                                        <span>Итого:</span>
-                                        <span>{{ order.get_total_cost }} ₽</span>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-calendar-check text-primary me-3 fs-5"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Дата и время</small>
+                                            <strong>{{ order.created|date:"d.m.Y H:i" }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-person text-primary me-3 fs-5"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Получатель</small>
+                                            <strong>{{ order.first_name }} {{ order.last_name }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-telephone text-primary me-3 fs-5"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Телефон</small>
+                                            <strong>{{ order.phone }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <i class="bi bi-geo-alt text-primary me-3 fs-5"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Адрес доставки</small>
+                                            <strong>{{ order.address }}</strong>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="alert alert-info mb-4">
+                    <!-- Состав заказа -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-4">
+                                <i class="bi bi-basket me-2"></i> Состав заказа
+                            </h5>
+                            
+                            {% for item in order.items.all %}
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" 
+                                         class="rounded me-3" 
+                                         alt="{{ item.product.name }}"
+                                         style="width: 60px; height: 60px; object-fit: cover;">
+                                    {% endif %}
+                                    <div>
+                                        <strong class="d-block">{{ item.product.name }}</strong>
+                                        <small class="text-muted">{{ item.product.category.name }}</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-3">x{{ item.quantity }}</span>
+                                        <strong class="fs-5">{{ item.get_cost }} ₽</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            
+                            <div class="border-top pt-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Стоимость товаров:</span>
+                                            <span>{{ order.get_total_cost }} ₽</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <span>Доставка:</span>
+                                            {% if order.get_total_cost >= 5000 %}
+                                            <span class="text-success">Бесплатно</span>
+                                            {% else %}
+                                            <span>500 ₽</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="bg-light rounded p-3">
+                                            <div class="d-flex justify-content-between align-items-center fw-bold fs-4">
+                                                <span>Итого:</span>
+                                                <span class="text-success">
+                                                    {% if order.get_total_cost >= 5000 %}
+                                                        {{ order.get_total_cost }} ₽
+                                                    {% else %}
+                                                        {{ order.get_total_cost|add:500 }} ₽
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Информация для клиента -->
+                    <div class="alert alert-info border-0 mb-5">
                         <div class="d-flex">
                             <i class="bi bi-info-circle fs-4 me-3"></i>
                             <div>
-                                <h6 class="alert-heading mb-2">Что дальше?</h6>
-                                <p class="mb-0">
-                                    В ближайшее время наш менеджер свяжется с вами для подтверждения заказа и уточнения времени доставки.
-                                    На вашу почту <strong>{{ order.email }}</strong> отправлено письмо с деталями заказа.
-                                </p>
+                                <h6 class="alert-heading mb-3">Что дальше?</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <i class="bi bi-telephone-outbound text-primary me-2"></i>
+                                            <div>
+                                                <strong class="d-block">Подтверждение заказа</strong>
+                                                <small class="text-muted">Наш менеджер свяжется с вами в течение 15 минут</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <i class="bi bi-envelope text-primary me-2"></i>
+                                            <div>
+                                                <strong class="d-block">Письмо с деталями</strong>
+                                                <small class="text-muted">Отправлено на {{ order.email }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <a href="{% url 'shop:home' %}" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-house"></i> На главную
+                    <!-- Кнопки действий -->
+                    <div class="row g-3 mb-5">
+                        <div class="col-md-4">
+                            <a href="{% url 'shop:home' %}" class="btn btn-outline-primary w-100 py-3">
+                                <i class="bi bi-house me-2"></i> На главную
                             </a>
                         </div>
-                        <div class="col-md-6">
-                            <a href="{% url 'shop:product_list' %}" class="btn btn-primary w-100">
-                                <i class="bi bi-cart-plus"></i> Продолжить покупки
+                        <div class="col-md-4">
+                            <a href="{% url 'shop:product_list' %}" class="btn btn-primary w-100 py-3">
+                                <i class="bi bi-cart-plus me-2"></i> Продолжить покупки
                             </a>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-light w-100 py-3" onclick="window.print()">
+                                <i class="bi bi-printer me-2"></i> Распечатать
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="mt-4 pt-4 border-top">
-                        <p class="text-muted small mb-2">
-                            <i class="bi bi-clock"></i> Время доставки: сегодня с 10:00 до 22:00
-                        </p>
-                        <p class="text-muted small mb-0">
-                            <i class="bi bi-headset"></i> Вопросы по заказу? Звоните: +7 (999) 123-45-67
-                        </p>
+                    <!-- Контакты поддержки -->
+                    <div class="text-center border-top pt-4">
+                        <h6 class="fw-bold mb-3">Остались вопросы?</h6>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-headset text-primary me-3 fs-4"></i>
+                                    <div class="text-start">
+                                        <strong class="d-block">+7 (999) 123-45-67</strong>
+                                        <small class="text-muted">Ежедневно с 9:00 до 21:00</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-clock text-primary me-3 fs-4"></i>
+                                    <div class="text-start">
+                                        <strong class="d-block">Время доставки</strong>
+                                        <small class="text-muted">Сегодня с 10:00 до 22:00</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-<!-- Автоматическая очистка корзины через JavaScript -->
-{% block extra_js %}
 <script>
-// Показываем сообщение об успехе
+// Показываем анимацию успеха
 document.addEventListener('DOMContentLoaded', function() {
-    // Можно добавить анимацию или дополнительные действия
-    console.log('Заказ успешно оформлен! Номер: {{ order.id }}');
+    // Добавляем класс анимации для элементов
+    const elements = document.querySelectorAll('.card');
+    elements.forEach((el, index) => {
+        setTimeout(() => {
+            el.classList.add('fade-in');
+        }, index * 100);
+    });
     
-    // Очищаем корзину в localStorage (если используется)
+    // Очищаем корзину в localStorage
     if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('cart_notification');
+        localStorage.removeItem('cartItems');
+        localStorage.removeItem('cartNotification');
     }
+    
+    // Можно отправить данные в аналитику
+    console.log('Заказ успешно оформлен. Номер:', {{ order.id }});
+    
+    // Показываем уведомление
+    setTimeout(() => {
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+        notification.style.zIndex = '1060';
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div>
+                    <strong>Заказ №{{ order.id }} оформлен!</strong>
+                    <div class="small">Детали отправлены на {{ order.email }}</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }, 1000);
 });
 </script>
 {% endblock %}

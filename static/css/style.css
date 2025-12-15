@@ -1,40 +1,399 @@
-/* Добавьте в base.html после bootstrap.css */
+/* Основные стили для цветочного магазина - Элегантная версия */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fefefe;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Навигация */
+.navbar {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    box-shadow: 0 2px 20px rgba(233, 138, 159, 0.1);
+    padding: 15px 0;
+    transition: all 0.3s ease;
 }
 
 .navbar-brand {
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #e98a9f 0%, #d76c83 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 100px 0;
-    margin-top: -20px;
+.navbar-brand i {
+    color: #e98a9f;
+    -webkit-text-fill-color: #e98a9f;
 }
 
-.card {
-    border: none;
+.nav-link {
+    color: #555 !important;
+    font-weight: 500;
+    margin: 0 8px;
     transition: all 0.3s ease;
+    position: relative;
 }
 
-.card:hover {
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    transform: translateY(-5px);
+.nav-link:hover {
+    color: #e98a9f !important;
 }
 
+.nav-link:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+    border-radius: 2px;
+}
+
+/* Кнопки */
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
     border: none;
+    padding: 10px 25px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(233, 138, 159, 0.3);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #68418f 100%);
+    background: linear-gradient(135deg, #d76c83 0%, #e98a9f 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(233, 138, 159, 0.4);
 }
 
+.btn-outline-primary {
+    color: #e98a9f;
+    border-color: #e98a9f;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+    border-color: #e98a9f;
+    color: white;
+}
+
+/* Герой-секция */
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                url('https://images.unsplash.com/photo-1464207687429-7505649dae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 150px 0;
+    margin-top: -20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(233, 138, 159, 0.1), rgba(156, 218, 143, 0.1));
+    z-index: 1;
+}
+
+.hero > .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Карточки товаров */
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(233, 138, 159, 0.15);
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.product-card {
+    border: 1px solid #f0f0f0;
+}
+
+.product-card .card-body {
+    padding: 20px;
+}
+
+/* Категории */
+.category-card {
+    height: 280px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.category-card img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.category-card:hover img {
+    transform: scale(1.1);
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    z-index: 1;
+}
+
+.category-card .card-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    color: white;
+    z-index: 2;
+}
+
+/* Преимущества */
+.feature-box {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(233, 138, 159, 0.1);
+}
+
+.feature-box i {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+}
+
+/* Футер */
 .footer {
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 60px 0 30px;
+    margin-top: 50px;
+}
+
+.footer h5 {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer h5::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+}
+
+.footer .btn-outline-primary {
+    color: white;
+    border-color: white;
+}
+
+.footer .btn-outline-primary:hover {
+    background: white;
+    color: #2c3e50;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    margin-top: 40px;
+}
+
+/* Формы */
+.form-control {
+    border: 2px solid #eee;
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #e98a9f;
+    box-shadow: 0 0 0 0.2rem rgba(233, 138, 159, 0.25);
+}
+
+/* Бейджи */
+.badge {
+    padding: 8px 15px;
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #9cda8f 0%, #b8e6b1 100%) !important;
+}
+
+/* Хлебные крошки */
+.breadcrumb {
+    background: none;
+    padding: 0;
+}
+
+.breadcrumb-item a {
+    color: #e98a9f;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #666;
+}
+
+/* Модальные окна */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+    color: white;
+    border: none;
+}
+
+/* Корзина */
+.cart-item {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 20px 0;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+/* Прогресс-бар оформления заказа */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+}
+
+.progress-bar {
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+    border-radius: 4px;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .hero {
+        padding: 100px 0;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .feature-box {
+        margin-bottom: 20px;
+    }
+    
+    .card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Специальные эффекты для цветов */
+.flower-icon {
+    color: #e98a9f;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.leaf-icon {
+    color: #9cda8f;
+}
+
+/* Секция призыва к действию */
+.cta-section {
+    background: linear-gradient(135deg, #e98a9f 0%, #f8b4c3 100%);
+    color: white;
+    padding: 80px 0;
+    border-radius: 20px;
+    margin: 50px 0;
+}
+
+/* Стили для отзывов */
+.testimonial {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.testimonial::before {
+    content: '"';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 4rem;
+    color: #e98a9f;
+    opacity: 0.2;
+    font-family: Georgia, serif;
 }

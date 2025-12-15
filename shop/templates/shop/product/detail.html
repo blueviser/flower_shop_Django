@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ product.name }} - Цветочный магазин{% endblock %}
+{% block title %}{{ product.name }} | Цветочная галерея{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-4">
     <!-- Хлебные крошки -->
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Главная</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Каталог</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'shop:product_list_by_category' product.category.slug %}">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}" class="text-decoration-none">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}" class="text-decoration-none">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop:product_list_by_category' product.category.slug %}" class="text-decoration-none">
                 {{ product.category.name }}
             </a></li>
             <li class="breadcrumb-item active">{{ product.name }}</li>
@@ -18,91 +18,171 @@
 
     <div class="row">
         <!-- Изображение товара -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body text-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-0">
                     {% if product.image %}
                     <img src="{{ product.image.url }}" class="img-fluid rounded" 
-                         alt="{{ product.name }}" style="max-height: 500px;">
+                         alt="{{ product.name }}" style="max-height: 500px; width: 100%; object-fit: cover;">
                     {% else %}
-                    <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                    <div class="bg-light rounded d-flex flex-column align-items-center justify-content-center" 
                          style="height: 500px;">
-                        <span class="text-muted">Нет изображения</span>
+                        <i class="bi bi-flower1 display-1 text-muted mb-3"></i>
+                        <span class="text-muted">Изображение скоро появится</span>
                     </div>
                     {% endif %}
                 </div>
+                
+                <!-- Дополнительные миниатюры (заглушка) -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button class="btn btn-outline-secondary btn-sm mx-1 active">
+                        <i class="bi bi-image"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm mx-1">
+                        <i class="bi bi-image"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm mx-1">
+                        <i class="bi bi-image"></i>
+                    </button>
+                </div>
             </div>
-            
-            <!-- Дополнительные изображения можно добавить здесь -->
         </div>
 
         <!-- Информация о товаре -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h1 class="card-title">{{ product.name }}</h1>
-                    
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="h2 text-primary">{{ product.price }} ₽</span>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h1 class="h2 fw-bold mb-0">{{ product.name }}</h1>
                         {% if product.available %}
-                        <span class="badge bg-success fs-6">В наличии</span>
+                        <span class="badge bg-success fs-6 py-2 px-3">В наличии</span>
                         {% else %}
-                        <span class="badge bg-secondary fs-6">Нет в наличии</span>
+                        <span class="badge bg-secondary fs-6 py-2 px-3">Нет в наличии</span>
                         {% endif %}
                     </div>
                     
                     <div class="mb-3">
-                        <span class="text-muted">Категория:</span>
                         <a href="{% url 'shop:product_list_by_category' product.category.slug %}" 
-                           class="badge bg-info text-decoration-none">
-                            {{ product.category.name }}
+                           class="text-decoration-none">
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-tag me-1"></i>{{ product.category.name }}
+                            </span>
                         </a>
                     </div>
 
-                    <hr>
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="h2 text-primary fw-bold me-3">{{ product.price }} ₽</span>
+                        {% if product.old_price %}
+                        <span class="text-muted text-decoration-line-through me-3">{{ product.old_price }} ₽</span>
+                        <span class="badge bg-danger">-{{ product.discount_percent }}%</span>
+                        {% endif %}
+                    </div>
 
-                    <h5>Описание</h5>
-                    <p class="card-text">{{ product.description|linebreaks }}</p>
+                    <hr class="my-4">
 
-                    <hr>
+                    <h5 class="mb-3">
+                        <i class="bi bi-card-text me-2"></i>Описание
+                    </h5>
+                    <div class="mb-4">
+                        {{ product.description|linebreaks }}
+                    </div>
+
+                    <!-- Характеристики -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Характеристики
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <small class="text-muted d-block">Высота букета</small>
+                                <span>40-50 см</span>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <small class="text-muted d-block">Срок свежести</small>
+                                <span>7-10 дней</span>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <small class="text-muted d-block">Количество цветов</small>
+                                <span>9-11 шт</span>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <small class="text-muted d-block">Упаковка</small>
+                                <span>Подарочная</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Форма добавления в корзину -->
                     {% if product.available %}
-                    <form action="{% url 'shop:cart_add' product.id %}" method="post" class="mt-4">
-                        {% csrf_token %}
-                        <div class="row g-3 align-items-center">
-                            <div class="col-auto">
-                                <label for="quantity" class="form-label">Количество:</label>
-                            </div>
-                            <div class="col-auto">
-                                <input type="number" name="quantity" id="quantity" 
-                                       value="1" min="1" max="99" 
-                                       class="form-control" style="width: 100px;">
-                            </div>
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-cart-plus"></i> Добавить в корзину
-                                </button>
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            <form action="{% url 'shop:cart_add' product.id %}" method="post" class="row g-3 align-items-center">
+                                {% csrf_token %}
+                                <div class="col-auto">
+                                    <label for="quantity" class="form-label mb-0">Количество:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="input-group" style="width: 140px;">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+                                        <input type="number" name="quantity" id="quantity" 
+                                               value="1" min="1" max="99" 
+                                               class="form-control text-center">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-auto flex-grow-1">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-cart-plus me-2"></i> Добавить в корзину
+                                    </button>
+                                </div>
+                                <input type="hidden" name="update" value="false">
+                            </form>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle me-3 fs-4"></i>
+                            <div>
+                                <strong>Этот товар временно отсутствует в наличии</strong>
+                                <p class="mb-0 small">Оставьте свой email, и мы сообщим вам о поступлении</p>
                             </div>
                         </div>
-                        <input type="hidden" name="update" value="false">
-                    </form>
-                    {% else %}
-                    <div class="alert alert-warning mt-4">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Этот товар временно отсутствует в наличии
                     </div>
                     {% endif %}
 
                     <!-- Информация о доставке -->
-                    <div class="card mt-4">
-                        <div class="card-body bg-light">
-                            <h6><i class="bi bi-truck"></i> Условия доставки</h6>
-                            <ul class="small mb-0">
-                                <li>Бесплатная доставка при заказе от 5000 ₽</li>
-                                <li>Доставка в день заказа при оформлении до 16:00</li>
-                                <li>Возможность самовывоза из нашего магазина</li>
-                            </ul>
+                    <div class="card border-0 bg-light mt-4">
+                        <div class="card-body">
+                            <h6 class="mb-3">
+                                <i class="bi bi-truck me-2"></i> Условия доставки
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <small>Бесплатная доставка от 5000 ₽</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <small>Доставка в день заказа</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <small>Самовывоз из магазина</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <small>Оплата при получении</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -112,23 +192,25 @@
 
     <!-- Похожие товары -->
     {% if related_products %}
-    <div class="mt-5">
-        <h3>Похожие товары</h3>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
+    <div class="mt-5 pt-4">
+        <h3 class="fw-bold mb-4">Похожие букеты</h3>
+        <div class="row g-4">
             {% for related in related_products %}
-            <div class="col">
-                <div class="card h-100 product-card">
+            <div class="col-md-4 col-lg-3">
+                <div class="card product-card h-100">
                     {% if related.image %}
                     <img src="{{ related.image.url }}" class="card-img-top" 
                          alt="{{ related.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h6 class="card-title">{{ related.name }}</h6>
-                        <p class="card-text text-primary">{{ related.price }} ₽</p>
-                        <a href="{% url 'shop:product_detail' related.slug %}" 
-                           class="btn btn-outline-primary btn-sm w-100">
-                            Смотреть
-                        </a>
+                        <p class="card-text text-primary fw-bold mb-3">{{ related.price }} ₽</p>
+                        <div class="mt-auto">
+                            <a href="{% url 'shop:product_detail' related.slug %}" 
+                               class="btn btn-outline-primary btn-sm w-100">
+                                Подробнее
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,4 +219,20 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+function increaseQuantity() {
+    const input = document.getElementById('quantity');
+    if (input.value < 99) {
+        input.value = parseInt(input.value) + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const input = document.getElementById('quantity');
+    if (input.value > 1) {
+        input.value = parseInt(input.value) - 1;
+    }
+}
+</script>
 {% endblock %}

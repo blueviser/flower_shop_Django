@@ -1,142 +1,156 @@
 {% extends 'base.html' %}
 
-{% block title %}Оформление заказа - Цветочный магазин{% endblock %}
+{% block title %}Оформление заказа | Цветочная галерея{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
+<div class="container py-4">
+    <!-- Прогресс оформления -->
+    <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
-            <!-- Прогресс оформления -->
-            <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-center">
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
-                             style="width: 50px; height: 50px;">
-                            <i class="bi bi-cart-check fs-4"></i>
-                        </div>
-                        <span class="fw-bold">Корзина</span>
+            <div class="d-flex justify-content-between align-items-center position-relative">
+                <!-- Шаг 1 -->
+                <div class="text-center z-2">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
+                         style="width: 60px; height: 60px;">
+                        <i class="bi bi-check-lg fs-5"></i>
                     </div>
-                    
-                    <div class="flex-grow-1">
-                        <div class="progress" style="height: 5px;">
-                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
-                             style="width: 50px; height: 50px;">
-                            <i class="bi bi-person fs-4"></i>
-                        </div>
-                        <span class="fw-bold">Данные</span>
-                    </div>
-                    
-                    <div class="flex-grow-1">
-                        <div class="progress" style="height: 5px;">
-                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto mb-2" 
-                             style="width: 50px; height: 50px;">
-                            <i class="bi bi-check2 fs-4 text-muted"></i>
-                        </div>
-                        <span class="text-muted">Подтверждение</span>
+                    <span class="fw-bold text-primary">Корзина</span>
+                </div>
+                
+                <!-- Линия -->
+                <div class="position-absolute top-30 start-0 end-0" style="top: 30px;">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-primary" style="width: 50%"></div>
                     </div>
                 </div>
+                
+                <!-- Шаг 2 -->
+                <div class="text-center z-2">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
+                         style="width: 60px; height: 60px;">
+                        <i class="bi bi-person fs-5"></i>
+                    </div>
+                    <span class="fw-bold text-primary">Данные</span>
+                </div>
+                
+                <!-- Линия -->
+                <div class="position-absolute top-30 start-50 end-0" style="top: 30px;">
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Шаг 3 -->
+                <div class="text-center z-2">
+                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto mb-2" 
+                         style="width: 60px; height: 60px;">
+                        <i class="bi bi-check2 fs-5 text-muted"></i>
+                    </div>
+                    <span class="text-muted">Подтверждение</span>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <h1 class="mb-4">Оформление заказа</h1>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="h2 fw-bold mb-4">Оформление заказа</h1>
 
             <div class="row">
                 <!-- Форма заказа -->
-                <div class="col-md-8">
-                    <div class="card mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> Контактная информация</h5>
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person-circle me-2"></i> Контактная информация
+                            </h5>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body p-4">
                             <form method="post" action=".">
                                 {% csrf_token %}
                                 
                                 {% if form.errors %}
-                                <div class="alert alert-danger">
-                                    <strong>Пожалуйста, исправьте ошибки:</strong>
-                                    <ul class="mb-0">
-                                        {% for field, errors in form.errors.items %}
-                                            {% for error in errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </ul>
+                                <div class="alert alert-danger border-0 mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                                        <div>
+                                            <strong>Пожалуйста, исправьте ошибки:</strong>
+                                            <ul class="mb-0 mt-2">
+                                                {% for field, errors in form.errors.items %}
+                                                    {% for error in errors %}
+                                                        <li>{{ error }}</li>
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                                 {% endif %}
                                 
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Имя *</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Имя *</label>
                                         {{ form.first_name }}
                                         {% if form.first_name.errors %}
-                                        <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                        <div class="text-danger small mt-1">{{ form.first_name.errors }}</div>
                                         {% endif %}
                                     </div>
                                     
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Фамилия *</label>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Фамилия *</label>
                                         {{ form.last_name }}
                                         {% if form.last_name.errors %}
-                                        <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                        <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
                                         {% endif %}
                                     </div>
                                 </div>
                                 
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Email *</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Email *</label>
                                         {{ form.email }}
                                         {% if form.email.errors %}
-                                        <div class="text-danger small">{{ form.email.errors }}</div>
+                                        <div class="text-danger small mt-1">{{ form.email.errors }}</div>
                                         {% endif %}
                                     </div>
                                     
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Телефон *</label>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Телефон *</label>
                                         {{ form.phone }}
-                                        <div class="form-text">Пример: +7 (999) 123-45-67</div>
+                                        <div class="form-text small">Пример: +7 (999) 123-45-67</div>
                                         {% if form.phone.errors %}
-                                        <div class="text-danger small">{{ form.phone.errors }}</div>
+                                        <div class="text-danger small mt-1">{{ form.phone.errors }}</div>
                                         {% endif %}
                                     </div>
                                 </div>
                                 
-                                <div class="mb-3">
-                                    <label class="form-label">Адрес доставки *</label>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Адрес доставки *</label>
                                     {{ form.address }}
-                                    <div class="form-text">Укажите полный адрес: город, улица, дом, квартира</div>
+                                    <div class="form-text small">Укажите полный адрес: город, улица, дом, квартира, подъезд, этаж</div>
                                     {% if form.address.errors %}
-                                    <div class="text-danger small">{{ form.address.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.address.errors }}</div>
                                     {% endif %}
                                 </div>
                                 
-                                <div class="mb-3">
-                                    <label class="form-label">Комментарий к заказу</label>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Комментарий к заказу</label>
                                     <textarea name="comment" class="form-control" rows="3" 
-                                              placeholder="Например: позвонить за час до доставки..."></textarea>
+                                              placeholder="Например: позвонить за час до доставки, код домофона, удобное время..."></textarea>
                                 </div>
                                 
                                 <div class="form-check mb-4">
                                     <input class="form-check-input" type="checkbox" id="agreeTerms" required>
                                     <label class="form-check-label" for="agreeTerms">
-                                        Я согласен с <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                        Я согласен с <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal" class="text-decoration-none">
                                             условиями обработки персональных данных
                                         </a> *
                                     </label>
                                 </div>
                                 
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="bi bi-check-circle"></i> Подтвердить заказ
+                                    <button type="submit" class="btn btn-primary btn-lg py-3">
+                                        <i class="bi bi-check-circle me-2"></i> Подтвердить заказ
                                     </button>
                                 </div>
                             </form>
@@ -144,31 +158,39 @@
                     </div>
                     
                     <!-- Способы оплаты -->
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-credit-card"></i> Способы оплаты</h5>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-light border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="bi bi-credit-card me-2"></i> Способы оплаты
+                            </h5>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 text-center mb-3">
-                                    <div class="border rounded p-3 h-100">
-                                        <i class="bi bi-cash-coin display-6 text-success"></i>
-                                        <h6 class="mt-2">Наличными</h6>
-                                        <p class="small text-muted">Курьеру при получении</p>
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="card border h-100 text-center">
+                                        <div class="card-body p-3">
+                                            <i class="bi bi-cash-coin display-6 text-success mb-3"></i>
+                                            <h6 class="fw-bold mb-2">Наличными</h6>
+                                            <p class="small text-muted mb-0">Курьеру при получении</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 text-center mb-3">
-                                    <div class="border rounded p-3 h-100">
-                                        <i class="bi bi-credit-card display-6 text-primary"></i>
-                                        <h6 class="mt-2">Картой онлайн</h6>
-                                        <p class="small text-muted">Безопасная оплата</p>
+                                <div class="col-md-4">
+                                    <div class="card border h-100 text-center">
+                                        <div class="card-body p-3">
+                                            <i class="bi bi-credit-card display-6 text-primary mb-3"></i>
+                                            <h6 class="fw-bold mb-2">Картой онлайн</h6>
+                                            <p class="small text-muted mb-0">Безопасная оплата</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 text-center mb-3">
-                                    <div class="border rounded p-3 h-100">
-                                        <i class="bi bi-phone display-6 text-info"></i>
-                                        <h6 class="mt-2">SBP</h6>
-                                        <p class="small text-muted">Через СБП</p>
+                                <div class="col-md-4">
+                                    <div class="card border h-100 text-center">
+                                        <div class="card-body p-3">
+                                            <i class="bi bi-phone display-6 text-info mb-3"></i>
+                                            <h6 class="fw-bold mb-2">СБП</h6>
+                                            <p class="small text-muted mb-0">Через СБП</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -177,69 +199,87 @@
                 </div>
 
                 <!-- Итоги заказа -->
-                <div class="col-md-4">
-                    <div class="card sticky-top" style="top: 100px;">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0"><i class="bi bi-receipt"></i> Ваш заказ</h5>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                        <div class="card-header bg-success text-white border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="bi bi-receipt me-2"></i> Ваш заказ
+                            </h5>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <h6>Товары:</h6>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">Товары:</h6>
                                 {% for item in cart %}
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span>{{ item.product.name }} x{{ item.quantity }}</span>
-                                    <span>{{ item.total_price }} ₽</span>
+                                <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
+                                    <div>
+                                        <span class="d-block">{{ item.product.name }}</span>
+                                        <small class="text-muted">x{{ item.quantity }}</small>
+                                    </div>
+                                    <span class="fw-bold">{{ item.total_price }} ₽</span>
                                 </div>
                                 {% endfor %}
                             </div>
                             
-                            <hr>
-                            
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-2">
                                     <span>Стоимость товаров:</span>
-                                    <span>{{ cart.get_total_price }} ₽</span>
+                                    <span class="fw-bold">{{ cart.get_total_price }} ₽</span>
                                 </div>
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-between mb-2">
                                     <span>Доставка:</span>
                                     {% if cart.get_total_price >= 5000 %}
-                                    <span class="text-success">Бесплатно</span>
+                                    <span class="text-success fw-bold">Бесплатно</span>
                                     {% else %}
-                                    <span>500 ₽</span>
+                                    <span class="fw-bold">500 ₽</span>
                                     {% endif %}
                                 </div>
                             </div>
                             
-                            <hr>
-                            
-                            <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>К оплате:</span>
-                                <span class="text-success">
-                                    {% if cart.get_total_price >= 5000 %}
-                                        {{ cart.get_total_price }} ₽
-                                    {% else %}
-                                        {{ cart.get_total_price|add:500 }} ₽
-                                    {% endif %}
-                                </span>
+                            <div class="border-top pt-3 mb-4">
+                                <div class="d-flex justify-content-between align-items-center fw-bold fs-5">
+                                    <span>К оплате:</span>
+                                    <span class="text-success">
+                                        {% if cart.get_total_price >= 5000 %}
+                                            {{ cart.get_total_price }} ₽
+                                        {% else %}
+                                            {{ cart.get_total_price|add:500 }} ₽
+                                        {% endif %}
+                                    </span>
+                                </div>
                             </div>
                             
-                            <div class="alert alert-info mt-3 small">
-                                <i class="bi bi-clock"></i>
-                                <strong>Время доставки:</strong> сегодня с 10:00 до 22:00
+                            <div class="alert alert-info border-0 small mb-0">
+                                <div class="d-flex">
+                                    <i class="bi bi-info-circle me-3"></i>
+                                    <div>
+                                        <strong class="d-block">Время доставки</strong>
+                                        Сегодня с 10:00 до 22:00. При заказе до 18:00
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Помощь -->
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <h6><i class="bi bi-question-circle"></i> Нужна помощь?</h6>
-                            <p class="small mb-2">
-                                <i class="bi bi-telephone"></i> +7 (999) 123-45-67
-                            </p>
-                            <p class="small mb-0">
-                                <i class="bi bi-clock"></i> Ежедневно с 9:00 до 21:00
-                            </p>
+                    <div class="card border-0 shadow-sm mt-4">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-question-circle me-2"></i> Нужна помощь?
+                            </h6>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-telephone text-primary me-3"></i>
+                                <div>
+                                    <strong class="d-block">+7 (999) 123-45-67</strong>
+                                    <small class="text-muted">Ежедневно с 9:00 до 21:00</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope text-primary me-3"></i>
+                                <div>
+                                    <strong class="d-block">info@flower-gallery.ru</strong>
+                                    <small class="text-muted">Пишите, ответим быстро</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -252,19 +292,62 @@
 <div class="modal fade" id="termsModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Условия обработки персональных данных</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Мы обрабатываем ваши персональные данные исключительно для выполнения вашего заказа.</p>
-                <p>Предоставляя свои данные, вы соглашаетесь на их обработку в соответствии с Федеральным законом №152-ФЗ «О персональных данных».</p>
+                <p>Мы, Цветочная галерея, обрабатываем ваши персональные данные исключительно для выполнения вашего заказа и улучшения качества обслуживания.</p>
+                
+                <h6 class="mt-4 mb-3">Какие данные мы собираем:</h6>
+                <ul>
+                    <li>Фамилия, имя, отчество</li>
+                    <li>Контактный телефон и email</li>
+                    <li>Адрес доставки</li>
+                    <li>Информация о заказах</li>
+                </ul>
+                
+                <h6 class="mt-4 mb-3">Для чего мы используем данные:</h6>
+                <ul>
+                    <li>Оформление и доставка заказов</li>
+                    <li>Информирование о статусе заказа</li>
+                    <li>Обратная связь с клиентом</li>
+                    <li>Улучшение качества услуг</li>
+                </ul>
+                
+                <p class="mt-4">Предоставляя свои данные, вы соглашаетесь на их обработку в соответствии с Федеральным законом №152-ФЗ «О персональных данных».</p>
                 <p>Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законодательством.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Маска для телефона
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.querySelector('input[name="phone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            e.target.value = '+7' + (x[2] ? ' (' + x[2] : '') + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+        });
+    }
+    
+    // Валидация формы
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const agreeCheckbox = document.getElementById('agreeTerms');
+            if (!agreeCheckbox.checked) {
+                e.preventDefault();
+                alert('Пожалуйста, согласитесь с условиями обработки персональных данных');
+                agreeCheckbox.focus();
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
