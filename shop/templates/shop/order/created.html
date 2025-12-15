@@ -1,130 +1,506 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Заказ оформлен - Цветочный магазин{% endblock %}
+{% block title %}Заказ оформлен | Bloom{% endblock %}
+
+{% block extra_head %}
+<style>
+    .success-page {
+        padding: var(--space-12) 0;
+        text-align: center;
+        min-height: calc(100vh - 400px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, 
+            rgba(var(--color-primary-rgb), 0.02) 0%,
+            rgba(var(--color-secondary-rgb), 0.01) 100%);
+    }
+    
+    .success-card {
+        background: var(--color-surface);
+        border-radius: var(--radius-2xl);
+        border: 1px solid var(--color-border);
+        padding: var(--space-12) var(--space-8);
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: var(--shadow-2xl);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: var(--gradient-primary);
+    }
+    
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--space-6);
+        background: linear-gradient(135deg, 
+            rgba(var(--color-primary-rgb), 0.1) 0%,
+            rgba(var(--color-accent-rgb), 0.1) 100%);
+        border: 4px solid var(--color-primary-light);
+        color: var(--color-primary);
+        font-size: 4rem;
+        animation: successPulse 2s ease infinite;
+    }
+    
+    @keyframes successPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .success-title {
+        font-size: var(--text-5xl);
+        margin-bottom: var(--space-4);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .success-subtitle {
+        font-size: var(--text-xl);
+        color: var(--color-text-light);
+        margin-bottom: var(--space-8);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .order-info {
+        background: var(--color-background);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        margin-bottom: var(--space-8);
+        border: 1px solid var(--color-border);
+        text-align: left;
+    }
+    
+    .order-number {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: var(--space-4);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .order-number span {
+        font-size: var(--text-lg);
+        color: var(--color-text-light);
+        font-weight: normal;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-6);
+        margin-bottom: var(--space-6);
+    }
+    
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+    
+    .info-label {
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+        font-weight: 600;
+    }
+    
+    .info-value {
+        font-size: var(--text-base);
+        color: var(--color-text);
+        font-weight: 500;
+    }
+    
+    .order-summary {
+        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        margin-top: var(--space-6);
+    }
+    
+    .summary-title {
+        font-size: var(--text-lg);
+        font-weight: 600;
+        margin-bottom: var(--space-4);
+        color: var(--color-text);
+        padding-bottom: var(--space-3);
+        border-bottom: 2px solid var(--color-border-light);
+    }
+    
+    .summary-items {
+        margin-bottom: var(--space-4);
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-name {
+        flex: 1;
+        text-align: left;
+    }
+    
+    .item-quantity {
+        color: var(--color-text-light);
+        margin: 0 var(--space-4);
+    }
+    
+    .item-price {
+        font-weight: 600;
+        color: var(--color-primary);
+        min-width: 80px;
+        text-align: right;
+    }
+    
+    .order-total {
+        border-top: 2px solid var(--color-border);
+        margin-top: var(--space-4);
+        padding-top: var(--space-4);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: var(--text-xl);
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .next-steps {
+        background: rgba(var(--color-accent-rgb), 0.1);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        margin: var(--space-8) 0;
+        border-left: 4px solid var(--color-accent);
+        text-align: left;
+    }
+    
+    .next-steps h4 {
+        font-size: var(--text-lg);
+        font-weight: 600;
+        margin-bottom: var(--space-4);
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+    
+    .next-steps h4 i {
+        color: var(--color-accent);
+    }
+    
+    .steps-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .steps-list li {
+        padding: var(--space-3) 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        color: var(--color-text);
+    }
+    
+    .steps-list li i {
+        color: var(--color-primary);
+        font-size: var(--text-lg);
+    }
+    
+    .action-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-4);
+        margin-top: var(--space-8);
+    }
+    
+    @media (max-width: 640px) {
+        .action-buttons {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .btn-outline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-6);
+        background: transparent;
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-full);
+        color: var(--color-text);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-fast);
+    }
+    
+    .btn-outline:hover {
+        background: var(--color-surface);
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-primary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-6);
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: var(--radius-full);
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-fast);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .contact-info {
+        margin-top: var(--space-8);
+        padding-top: var(--space-6);
+        border-top: 1px solid var(--color-border);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-6);
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        color: var(--color-text-light);
+        font-size: var(--text-sm);
+    }
+    
+    .contact-item i {
+        color: var(--color-primary);
+        font-size: var(--text-lg);
+    }
+    
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--color-primary);
+        border-radius: 50%;
+        animation: confetti 3s ease-out infinite;
+        opacity: 0;
+    }
+    
+    @keyframes confetti {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+    
+    /* Email Confirmation */
+    .email-confirmation {
+        background: rgba(var(--color-primary-rgb), 0.05);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        margin: var(--space-6) 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        color: var(--color-text);
+        font-size: var(--text-sm);
+    }
+    
+    .email-confirmation i {
+        color: var(--color-accent);
+        font-size: var(--text-xl);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white text-center">
-                    <h2 class="mb-0">
-                        <i class="bi bi-check-circle"></i> Заказ успешно оформлен!
-                    </h2>
+<div class="container">
+    <div class="success-page">
+        <div class="success-card">
+            <!-- Конфетти -->
+            <div class="confetti" style="top: 10%; left: 10%; background: var(--color-primary); animation-delay: 0s;"></div>
+            <div class="confetti" style="top: 20%; left: 20%; background: var(--color-secondary); animation-delay: 0.2s;"></div>
+            <div class="confetti" style="top: 30%; left: 30%; background: var(--color-accent); animation-delay: 0.4s;"></div>
+            <div class="confetti" style="top: 40%; left: 40%; background: var(--color-primary-light); animation-delay: 0.6s;"></div>
+            <div class="confetti" style="top: 50%; left: 50%; background: var(--color-secondary); animation-delay: 0.8s;"></div>
+            
+            <div class="success-icon">
+                <i class="ri-check-line"></i>
+            </div>
+            
+            <h1 class="success-title">Заказ оформлен!</h1>
+            <p class="success-subtitle">
+                Спасибо за ваш заказ! Мы уже начали собирать ваш букет.
+            </p>
+            
+            <!-- Информация о заказе -->
+            <div class="order-info">
+                <div class="order-number">
+                    <div>
+                        <i class="ri-receipt-line"></i>
+                        Номер заказа: #{{ order.id }}
+                    </div>
+                    <span>{{ order.created|date:"d.m.Y H:i" }}</span>
                 </div>
                 
-                <div class="card-body text-center py-5">
-                    <div class="mb-4">
-                        <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" 
-                             style="width: 100px; height: 100px;">
-                            <i class="bi bi-check2 display-4 text-success"></i>
-                        </div>
-                        
-                        <h3 class="text-success mb-3">Спасибо за ваш заказ!</h3>
-                        <p class="lead">Заказ № <strong>{{ order.id }}</strong> успешно создан.</p>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Имя</span>
+                        <span class="info-value">{{ order.first_name }} {{ order.last_name }}</span>
                     </div>
                     
-                    <div class="row justify-content-center mb-4">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-body text-start">
-                                    <h5 class="card-title">Детали заказа:</h5>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Номер заказа:</div>
-                                        <div class="col-sm-8 fw-bold">{{ order.id }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Дата:</div>
-                                        <div class="col-sm-8">{{ order.created|date:"d.m.Y H:i" }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Имя:</div>
-                                        <div class="col-sm-8">{{ order.first_name }} {{ order.last_name }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Email:</div>
-                                        <div class="col-sm-8">{{ order.email }}</div>
-                                    </div>
-                                    
-                                    <div class="row mb-2">
-                                        <div class="col-sm-4 text-muted">Телефон:</div>
-                                        <div class="col-sm-8">{{ order.phone }}</div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-4 text-muted">Адрес:</div>
-                                        <div class="col-sm-8">{{ order.address }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ order.email }}</span>
                     </div>
                     
-                    <div class="row justify-content-center mb-4">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-body text-start">
-                                    <h5 class="card-title">Состав заказа:</h5>
-                                    
-                                    {% for item in order.items.all %}
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <div>
-                                            {{ item.product.name }} 
-                                            <span class="text-muted">x{{ item.quantity }}</span>
-                                        </div>
-                                        <div class="fw-bold">{{ item.get_cost }} ₽</div>
-                                    </div>
-                                    {% endfor %}
-                                    
-                                    <hr>
-                                    
-                                    <div class="d-flex justify-content-between fw-bold fs-5">
-                                        <span>Итого:</span>
-                                        <span>{{ order.get_total_cost }} ₽</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="info-item">
+                        <span class="info-label">Телефон</span>
+                        <span class="info-value">{{ order.phone }}</span>
                     </div>
                     
-                    <div class="alert alert-info mb-4">
-                        <div class="d-flex">
-                            <i class="bi bi-info-circle fs-4 me-3"></i>
-                            <div>
-                                <h6 class="alert-heading mb-2">Что дальше?</h6>
-                                <p class="mb-0">
-                                    В ближайшее время наш менеджер свяжется с вами для подтверждения заказа и уточнения времени доставки.
-                                    На вашу почту <strong>{{ order.email }}</strong> отправлено письмо с деталями заказа.
-                                </p>
-                            </div>
-                        </div>
+                    <div class="info-item">
+                        <span class="info-label">Адрес доставки</span>
+                        <span class="info-value">{{ order.address }}</span>
                     </div>
                     
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <a href="{% url 'shop:home' %}" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-house"></i> На главную
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="{% url 'shop:product_list' %}" class="btn btn-primary w-100">
-                                <i class="bi bi-cart-plus"></i> Продолжить покупки
-                            </a>
-                        </div>
+                    <div class="info-item">
+                        <span class="info-label">Способ доставки</span>
+                        <span class="info-value">
+                            {% if order.delivery_type == 'pickup' %}
+                                Самовывоз
+                            {% else %}
+                                Курьерская доставка
+                            {% endif %}
+                        </span>
                     </div>
                     
-                    <div class="mt-4 pt-4 border-top">
-                        <p class="text-muted small mb-2">
-                            <i class="bi bi-clock"></i> Время доставки: сегодня с 10:00 до 22:00
-                        </p>
-                        <p class="text-muted small mb-0">
-                            <i class="bi bi-headset"></i> Вопросы по заказу? Звоните: +7 (999) 123-45-67
-                        </p>
+                    <div class="info-item">
+                        <span class="info-label">Способ оплаты</span>
+                        <span class="info-value">
+                            {% if order.payment_method == 'cash' %}
+                                Наличными курьеру
+                            {% elif order.payment_method == 'card' %}
+                                Картой онлайн
+                            {% else %}
+                                СБП
+                            {% endif %}
+                        </span>
                     </div>
+                </div>
+                
+                <!-- Состав заказа -->
+                <div class="order-summary">
+                    <h4 class="summary-title">Состав заказа</h4>
+                    
+                    <div class="summary-items">
+                        {% for item in order.items.all %}
+                        <div class="summary-item">
+                            <span class="item-name">{{ item.product.name }}</span>
+                            <span class="item-quantity">×{{ item.quantity }}</span>
+                            <span class="item-price">{{ item.price }} ₽</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="order-total">
+                        <span>Итого к оплате</span>
+                        <span>{{ order.get_total_cost }} ₽</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Подтверждение email -->
+            <div class="email-confirmation">
+                <i class="ri-mail-send-line"></i>
+                <span>Письмо с деталями заказа отправлено на {{ order.email }}</span>
+            </div>
+            
+            <!-- Что дальше -->
+            <div class="next-steps">
+                <h4><i class="ri-information-line"></i> Что дальше?</h4>
+                <ul class="steps-list">
+                    <li>
+                        <i class="ri-check-line"></i>
+                        <span>В ближайшее время с вами свяжется наш менеджер для подтверждения заказа</span>
+                    </li>
+                    <li>
+                        <i class="ri-check-line"></i>
+                        <span>Букет будет собран нашими флористами в течение 2-х часов</span>
+                    </li>
+                    <li>
+                        <i class="ri-check-line"></i>
+                        <span>Курьер доставит заказ сегодня с 10:00 до 22:00</span>
+                    </li>
+                    <li>
+                        <i class="ri-check-line"></i>
+                        <span>Вы получите SMS-уведомление за час до доставки</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Кнопки действий -->
+            <div class="action-buttons">
+                <a href="{% url 'shop:home' %}" class="btn-outline">
+                    <i class="ri-home-line"></i>
+                    На главную
+                </a>
+                
+                <a href="{% url 'shop:product_list' %}" class="btn-primary">
+                    <i class="ri-shopping-bag-line"></i>
+                    Продолжить покупки
+                </a>
+            </div>
+            
+            <!-- Контактная информация -->
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="ri-headphone-line"></i>
+                    <span>Вопросы по заказу? Звоните: +7 (999) 123-45-67</span>
+                </div>
+                <div class="contact-item">
+                    <i class="ri-time-line"></i>
+                    <span>Ежедневно с 9:00 до 21:00</span>
                 </div>
             </div>
         </div>
@@ -132,17 +508,83 @@
 </div>
 {% endblock %}
 
-<!-- Автоматическая очистка корзины через JavaScript -->
 {% block extra_js %}
 <script>
-// Показываем сообщение об успехе
 document.addEventListener('DOMContentLoaded', function() {
-    // Можно добавить анимацию или дополнительные действия
-    console.log('Заказ успешно оформлен! Номер: {{ order.id }}');
+    // Создаем конфетти
+    function createConfetti() {
+        const colors = [
+            'var(--color-primary)',
+            'var(--color-primary-light)',
+            'var(--color-secondary)',
+            'var(--color-accent)'
+        ];
+        
+        for (let i = 0; i < 20; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = Math.random() * 50 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+            
+            document.querySelector('.success-card').appendChild(confetti);
+            
+            // Удаляем конфетти после анимации
+            setTimeout(() => {
+                confetti.remove();
+            }, 5000);
+        }
+    }
     
-    // Очищаем корзину в localStorage (если используется)
+    // Запускаем конфетти при загрузке и каждые 3 секунды
+    createConfetti();
+    setInterval(createConfetti, 3000);
+    
+    // Показываем уведомление об успешном заказе
+    showNotification('Заказ успешно оформлен! Номер: #{{ order.id }}', 'success');
+    
+    // Очищаем корзину в localStorage
     if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('cart');
         localStorage.removeItem('cart_notification');
+        
+        // Обновляем счетчик корзины в шапке
+        const cartCount = document.querySelector('.cart-count');
+        if (cartCount) {
+            cartCount.remove();
+        }
+    }
+    
+    // Добавляем возможность распечатать страницу
+    const printBtn = document.createElement('button');
+    printBtn.className = 'btn-outline';
+    printBtn.style.marginTop = 'var(--space-4)';
+    printBtn.innerHTML = '<i class="ri-printer-line"></i> Распечатать';
+    printBtn.addEventListener('click', () => window.print());
+    
+    document.querySelector('.action-buttons').appendChild(printBtn);
+    
+    // Отслеживание события в Google Analytics (если подключен)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'purchase', {
+            transaction_id: '{{ order.id }}',
+            value: {{ order.get_total_cost }},
+            currency: 'RUB',
+            items: [
+                {% for item in order.items.all %}
+                {
+                    id: '{{ item.product.id }}',
+                    name: '{{ item.product.name }}',
+                    price: {{ item.price }},
+                    quantity: {{ item.quantity }}
+                },
+                {% endfor %}
+            ]
+        });
     }
 });
 </script>

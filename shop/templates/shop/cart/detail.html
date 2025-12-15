@@ -1,106 +1,384 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Корзина покупок - Цветочный магазин{% endblock %}
+{% block title %}Корзина | Bloom{% endblock %}
+
+{% block extra_head %}
+<style>
+    .cart-page {
+        padding: var(--space-8) 0;
+    }
+    
+    .cart-header {
+        margin-bottom: var(--space-8);
+    }
+    
+    .cart-title {
+        font-size: var(--text-4xl);
+        margin-bottom: var(--space-2);
+    }
+    
+    .cart-subtitle {
+        color: var(--color-text-light);
+        font-size: var(--text-lg);
+    }
+    
+    .cart-empty {
+        text-align: center;
+        padding: var(--space-12) 0;
+    }
+    
+    .cart-empty-icon {
+        font-size: 4rem;
+        color: var(--color-primary-light);
+        margin-bottom: var(--space-4);
+    }
+    
+    .cart-grid {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: var(--space-8);
+    }
+    
+    @media (max-width: 1024px) {
+        .cart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .cart-items {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    
+    .cart-item {
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        gap: var(--space-6);
+        padding: var(--space-6);
+        background: var(--color-surface);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition-fast);
+    }
+    
+    .cart-item:hover {
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-md);
+    }
+    
+    @media (max-width: 768px) {
+        .cart-item {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .cart-item-image {
+        width: 120px;
+        height: 120px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+    
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .cart-item-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .cart-item-header {
+        margin-bottom: var(--space-4);
+    }
+    
+    .cart-item-title {
+        font-size: var(--text-lg);
+        font-weight: 600;
+        margin-bottom: var(--space-2);
+    }
+    
+    .cart-item-title a {
+        color: var(--color-text);
+        text-decoration: none;
+    }
+    
+    .cart-item-title a:hover {
+        color: var(--color-primary);
+    }
+    
+    .cart-item-category {
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+    }
+    
+    .cart-item-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .cart-item-price {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .cart-item-actions {
+        display: flex;
+        gap: var(--space-4);
+    }
+    
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    
+    .quantity-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--color-background);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-light);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .quantity-btn:hover {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+    
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+        padding: var(--space-2);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        background: var(--color-background);
+        color: var(--color-text);
+    }
+    
+    .remove-btn {
+        padding: var(--space-2) var(--space-4);
+        background: transparent;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-light);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .remove-btn:hover {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+    
+    .cart-summary {
+        background: var(--color-surface);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        border: 1px solid var(--color-border);
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+    
+    .summary-title {
+        font-size: var(--text-xl);
+        font-weight: 600;
+        margin-bottom: var(--space-6);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+    
+    .summary-label {
+        color: var(--color-text-light);
+    }
+    
+    .summary-value {
+        font-weight: 600;
+        color: var(--color-text);
+    }
+    
+    .summary-total {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .promo-section {
+        margin: var(--space-6) 0;
+    }
+    
+    .promo-form {
+        display: flex;
+        gap: var(--space-2);
+    }
+    
+    .promo-input {
+        flex: 1;
+        padding: var(--space-3) var(--space-4);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-background);
+        color: var(--color-text);
+    }
+    
+    .promo-btn {
+        padding: var(--space-3) var(--space-4);
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .promo-btn:hover {
+        background: var(--color-primary-dark);
+    }
+    
+    .checkout-btn {
+        width: 100%;
+        margin-top: var(--space-6);
+    }
+    
+    .continue-shopping {
+        display: inline-block;
+        margin-top: var(--space-4);
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-fast);
+    }
+    
+    .continue-shopping:hover {
+        color: var(--color-primary-dark);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">
-        <i class="bi bi-cart3"></i> Корзина покупок
-    </h1>
-
-    {% if cart %}
-    <div class="row">
-        <!-- Список товаров -->
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Ваши товары</h5>
-                </div>
-                <div class="card-body">
-                    {% for item in cart %}
-                    {% with product=item.product %}
-                    <div class="row align-items-center mb-4 pb-3 border-bottom">
-                        <!-- Изображение -->
-                        <div class="col-md-2">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" class="img-fluid rounded" 
-                                 alt="{{ product.name }}" style="height: 100px; object-fit: cover;">
-                            {% else %}
-                            <div class="bg-light rounded d-flex align-items-center justify-content-center" 
-                                 style="height: 100px; width: 100px;">
-                                <span class="text-muted small">Нет фото</span>
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <!-- Информация о товаре -->
-                        <div class="col-md-4">
-                            <h6 class="mb-1">{{ product.name }}</h6>
-                            <p class="text-muted small mb-0">{{ product.category.name }}</p>
-                            <p class="text-muted small mb-0">Цена за шт: {{ item.price }} ₽</p>
-                        </div>
-
-                        <!-- Количество -->
-                        <div class="col-md-3">
-                            <form action="{% url 'shop:cart_add' product.id %}" method="post" class="d-flex">
-                                {% csrf_token %}
-                                <input type="number" name="quantity" 
-                                       value="{{ item.quantity }}" min="1" max="99" 
-                                       class="form-control form-control-sm me-2" style="width: 80px;">
-                                <input type="hidden" name="update" value="true">
-                                <button type="submit" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-arrow-clockwise"></i>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Стоимость и удаление -->
-                        <div class="col-md-3 text-end">
-                            <div class="h6 mb-2">{{ item.total_price }} ₽</div>
-                            <a href="{% url 'shop:cart_remove' product.id %}" 
-                               class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Удалить
-                            </a>
-                        </div>
-                    </div>
-                    {% endwith %}
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Продолжить покупки -->
-            <div class="mt-3">
-                <a href="{% url 'shop:product_list' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Продолжить покупки
-                </a>
-            </div>
+<div class="container">
+    <div class="cart-page">
+        <div class="cart-header">
+            <h1 class="cart-title">Корзина</h1>
+            <p class="cart-subtitle">Ваши выбранные букеты</p>
         </div>
-
-        <!-- Итоговая сумма -->
-        <div class="col-md-4">
-            <div class="card sticky-top" style="top: 100px;">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Итог заказа</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Товары ({{ cart|length }}):</span>
-                        <span>{{ cart.get_total_price }} ₽</span>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Доставка:</span>
-                        {% if cart.get_total_price >= 5000 %}
-                        <span class="text-success">Бесплатно</span>
+        
+        {% if cart %}
+        <div class="cart-grid">
+            <!-- Cart Items -->
+            <div class="cart-items">
+                {% for item in cart %}
+                {% with product=item.product %}
+                <div class="cart-item" data-product-id="{{ product.id }}">
+                    <div class="cart-item-image">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         {% else %}
-                        <span>500 ₽</span>
+                        <div class="image-placeholder">
+                            <i class="ri-image-line"></i>
+                        </div>
                         {% endif %}
                     </div>
                     
-                    <hr>
+                    <div class="cart-item-content">
+                        <div class="cart-item-header">
+                            <h3 class="cart-item-title">
+                                <a href="{% url 'shop:product_detail' product.slug %}">{{ product.name }}</a>
+                            </h3>
+                            <div class="cart-item-category">{{ product.category.name }}</div>
+                        </div>
+                        
+                        <div class="cart-item-footer">
+                            <div class="cart-item-price">
+                                {{ item.total_price }} ₽
+                                <small class="text-muted">({{ item.price }} ₽/шт)</small>
+                            </div>
+                            
+                            <div class="cart-item-actions">
+                                <form action="{% url 'shop:cart_add' product.id %}" method="post" class="update-form">
+                                    {% csrf_token %}
+                                    <div class="quantity-control">
+                                        <button type="button" class="quantity-btn quantity-minus" 
+                                                onclick="updateQuantity(this, -1)">
+                                            <i class="ri-subtract-line"></i>
+                                        </button>
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                               min="1" max="99" class="quantity-input" 
+                                               data-product-id="{{ product.id }}">
+                                        <button type="button" class="quantity-btn quantity-plus" 
+                                                onclick="updateQuantity(this, 1)">
+                                            <i class="ri-add-line"></i>
+                                        </button>
+                                    </div>
+                                    <input type="hidden" name="update" value="true">
+                                </form>
+                                
+                                <a href="{% url 'shop:cart_remove' product.id %}" class="remove-btn">
+                                    <i class="ri-delete-bin-line"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endfor %}
+            </div>
+            
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <h2 class="summary-title">Итог заказа</h2>
+                
+                <div class="summary-rows">
+                    <div class="summary-row">
+                        <span class="summary-label">Товары ({{ cart|length }})</span>
+                        <span class="summary-value">{{ cart.get_total_price }} ₽</span>
+                    </div>
                     
-                    <div class="d-flex justify-content-between fw-bold fs-5">
-                        <span>Итого:</span>
+                    <div class="summary-row">
+                        <span class="summary-label">Доставка</span>
+                        <span class="summary-value">
+                            {% if cart.get_total_price >= 5000 %}
+                            <span class="text-success">Бесплатно</span>
+                            {% else %}
+                            500 ₽
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if cart.get_total_price < 5000 %}
+                    <div class="summary-row text-sm text-muted">
+                        <span>До бесплатной доставки</span>
+                        <span>{{ 5000|add:-cart.get_total_price }} ₽</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="summary-row summary-total">
+                        <span>Итого</span>
                         <span>
                             {% if cart.get_total_price >= 5000 %}
                                 {{ cart.get_total_price }} ₽
@@ -109,43 +387,132 @@
                             {% endif %}
                         </span>
                     </div>
-                    
-                    <div class="mt-4">
-                        <a href="{% url 'shop:order_create' %}" class="btn btn-success btn-lg w-100">
-                            <i class="bi bi-credit-card"></i> Оформить заказ
-                        </a>
-                    </div>
-                    
-                    <!-- Условия доставки -->
-                    <div class="alert alert-info mt-3 small">
-                        <i class="bi bi-info-circle"></i>
-                        <strong>Бесплатная доставка</strong> при заказе от 5000 ₽
-                    </div>
                 </div>
+                
+                <!-- Promo Code -->
+                <div class="promo-section">
+                    <form class="promo-form">
+                        <input type="text" placeholder="Промокод" class="promo-input">
+                        <button type="submit" class="promo-btn">Применить</button>
+                    </form>
+                </div>
+                
+                <!-- Checkout Button -->
+                <a href="{% url 'shop:order_create' %}" class="btn btn-primary checkout-btn">
+                    <i class="ri-arrow-right-line"></i>
+                    <span>Перейти к оформлению</span>
+                </a>
+                
+                <a href="{% url 'shop:product_list' %}" class="continue-shopping">
+                    <i class="ri-arrow-left-line"></i>
+                    <span>Продолжить покупки</span>
+                </a>
             </div>
         </div>
+        
+        {% else %}
+        <div class="cart-empty">
+            <div class="cart-empty-icon">
+                <i class="ri-shopping-bag-line"></i>
+            </div>
+            <h2>Ваша корзина пуста</h2>
+            <p class="text-muted">Добавьте товары из каталога, чтобы сделать заказ</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+                <i class="ri-store-2-line"></i>
+                <span>Перейти в каталог</span>
+            </a>
+        </div>
+        {% endif %}
     </div>
-    
-    {% else %}
-    <!-- Пустая корзина -->
-    <div class="text-center py-5">
-        <i class="bi bi-cart-x display-1 text-muted"></i>
-        <h3 class="mt-3">Ваша корзина пуста</h3>
-        <p class="text-muted">Добавьте товары из каталога, чтобы сделать заказ</p>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg mt-3">
-            <i class="bi bi-shop"></i> Перейти в каталог
-        </a>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// Автоматическое обновление количества при изменении
-document.querySelectorAll('input[name="quantity"]').forEach(input => {
-    input.addEventListener('change', function() {
-        this.closest('form').submit();
+document.addEventListener('DOMContentLoaded', function() {
+    // Обновление количества товара
+    window.updateQuantity = function(button, change) {
+        const form = button.closest('.update-form');
+        const input = form.querySelector('.quantity-input');
+        let value = parseInt(input.value) || 1;
+        value = Math.max(1, Math.min(99, value + change));
+        input.value = value;
+        
+        // Автоматическая отправка формы при изменении
+        setTimeout(() => {
+            form.submit();
+        }, 300);
+    };
+    
+    // Автоматическое обновление при изменении вручную
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const form = this.closest('.update-form');
+            form.submit();
+        });
+    });
+    
+    // Удаление товара с подтверждением
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (confirm('Удалить товар из корзины?')) {
+                fetch(this.href, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Удаляем элемент из DOM
+                        const cartItem = this.closest('.cart-item');
+                        cartItem.style.opacity = '0';
+                        cartItem.style.transform = 'translateX(-20px)';
+                        
+                        setTimeout(() => {
+                            cartItem.remove();
+                            
+                            // Обновляем счетчик корзины
+                            const cartCount = document.querySelector('.cart-count');
+                            if (cartCount) {
+                                const currentCount = parseInt(cartCount.textContent) || 0;
+                                cartCount.textContent = Math.max(0, currentCount - 1);
+                            }
+                            
+                            // Показываем уведомление
+                            showNotification('Товар удален из корзины', 'success');
+                            
+                            // Если корзина пуста, перезагружаем страницу
+                            if (document.querySelectorAll('.cart-item').length === 0) {
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Ошибка при удалении товара', 'error');
+                });
+            }
+        });
+    });
+    
+    // Применение промокода
+    document.querySelector('.promo-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = this.querySelector('.promo-input');
+        const code = input.value.trim();
+        
+        if (code) {
+            // Здесь должна быть логика проверки промокода
+            showNotification('Промокод применен!', 'success');
+            input.value = '';
+        }
     });
 });
 </script>

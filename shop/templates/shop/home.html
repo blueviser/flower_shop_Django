@@ -1,184 +1,247 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Цветочный магазин - Доставляем красоту{% endblock %}
+{% block title %}Bloom | Премиальные цветы с доставкой{% endblock %}
 
 {% block content %}
-<!-- Герой-секция -->
-<div class="hero text-center mb-5">
-    <div class="container py-5">
-        <h1 class="display-4 fw-bold mb-3">Цветы, которые говорят за вас</h1>
-        <p class="lead mb-4">Самые свежие букеты с доставкой по городу в день заказа</p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg px-4">
-                <i class="bi bi-shop"></i> Смотреть каталог
-            </a>
-            <a href="#categories" class="btn btn-outline-light btn-lg px-4">
-                <i class="bi bi-grid"></i> Категории
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Преимущества -->
-<div class="container mb-5">
-    <div class="row g-4">
-        <div class="col-md-3 col-sm-6 text-center">
-            <div class="p-4 rounded bg-light h-100">
-                <i class="bi bi-truck display-6 text-primary mb-3"></i>
-                <h5>Быстрая доставка</h5>
-                <p class="small text-muted">Доставим в день заказа при оформлении до 16:00</p>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 text-center">
-            <div class="p-4 rounded bg-light h-100">
-                <i class="bi bi-flower2 display-6 text-primary mb-3"></i>
-                <h5>Свежие цветы</h5>
-                <p class="small text-muted">Только свежие цветы от проверенных поставщиков</p>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 text-center">
-            <div class="p-4 rounded bg-light h-100">
-                <i class="bi bi-gift display-6 text-primary mb-3"></i>
-                <h5>Подарочная упаковка</h5>
-                <p class="small text-muted">Бесплатная праздничная упаковка для всех букетов</p>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 text-center">
-            <div class="p-4 rounded bg-light h-100">
-                <i class="bi bi-shield-check display-6 text-primary mb-3"></i>
-                <h5>Гарантия качества</h5>
-                <p class="small text-muted">Если цветы завянут в течение 3 дней - вернем деньги</p>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Цветы, которые <span class="text-gradient">говорят</span> за вас</h1>
+            <p class="hero-subtitle">Самые свежие букеты от ведущих флористов с доставкой в день заказа</p>
+            <div class="hero-actions">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+                    <i class="ri-shopping-bag-line"></i>
+                    <span>Смотреть коллекцию</span>
+                </a>
+                <a href="#collections" class="btn btn-outline">
+                    <i class="ri-flower-line"></i>
+                    <span>Выбрать по настроению</span>
+                </a>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Категории -->
-<div class="container mb-5" id="categories">
-    <h2 class="text-center mb-4">Популярные категории</h2>
-    <div class="row g-4">
-        {% for category in categories %}
-        <div class="col-md-4 col-sm-6">
-            <a href="{% url 'shop:product_list_by_category' category.slug %}" 
-               class="text-decoration-none">
-                <div class="card category-card h-100">
+<!-- Featured Collections -->
+<section id="collections" class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Коллекции</h2>
+            <p class="section-subtitle">Выберите букет для особого момента</p>
+        </div>
+        
+        <div class="categories-grid">
+            {% for category in categories|slice:":4" %}
+            <a href="{% url 'shop:product_list_by_category' category.slug %}" class="category-card">
+                <div class="category-image-wrapper">
                     {% if category.image %}
-                    <img src="{{ category.image.url }}" class="card-img-top" 
-                         alt="{{ category.name }}" style="height: 200px; object-fit: cover;">
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image">
                     {% else %}
-                    <div class="bg-light d-flex align-items-center justify-content-center" 
-                         style="height: 200px;">
-                        <i class="bi bi-flower1 display-4 text-muted"></i>
+                    <div class="category-placeholder">
+                        <i class="ri-flower-line"></i>
                     </div>
                     {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title text-dark">{{ category.name }}</h5>
-                        <p class="card-text text-muted small">Смотреть коллекцию →</p>
-                    </div>
+                </div>
+                <div class="category-content">
+                    <h3 class="category-title">{{ category.name }}</h3>
+                    <span class="category-count">{{ category.products.count }} букетов</span>
                 </div>
             </a>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-</div>
+</section>
 
-<!-- Популярные товары -->
-<div class="container mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Популярные букеты</h2>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-primary">
-            Весь каталог <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-    
-    {% if featured_products %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        {% for product in featured_products %}
-        <div class="col">
-            <div class="card h-100 product-card">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" class="card-img-top" 
-                     alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
-                {% else %}
-                <div class="bg-light d-flex align-items-center justify-content-center" 
-                     style="height: 250px;">
-                    <i class="bi bi-image text-muted display-4"></i>
-                </div>
+<!-- Featured Products -->
+<section class="section bg-surface">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Популярные букеты</h2>
+            <p class="section-subtitle">Выбор наших клиентов</p>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <div class="product-card">
+                {% if product.available %}
+                <span class="product-badge">В наличии</span>
                 {% endif %}
                 
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text text-muted small">{{ product.category.name }}</p>
-                    <p class="card-text flex-grow-1">{{ product.description|truncatechars:60 }}</p>
+                <div class="product-image">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="product-image-placeholder">
+                        <i class="ri-image-line"></i>
+                    </div>
+                    {% endif %}
                     
-                    <div class="mt-auto">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="h4 text-primary">{{ product.price }} ₽</span>
-                            {% if product.available %}
-                            <span class="badge bg-success">В наличии</span>
-                            {% endif %}
+                    <div class="product-overlay">
+                        <div class="product-overlay-content">
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-primary">
+                                <i class="ri-eye-line"></i>
+                                <span>Подробнее</span>
+                            </a>
                         </div>
-                        
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'shop:product_detail' product.slug %}" 
-                               class="btn btn-outline-primary">Подробнее</a>
-                            
-                            {% if product.available %}
-                            <form action="{% url 'shop:cart_add' product.id %}" method="post" class="d-grid">
+                    </div>
+                </div>
+                
+                <div class="product-content">
+                    <div class="product-header">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <span class="product-category">{{ product.category.name }}</span>
+                    </div>
+                    
+                    <p class="product-description">{{ product.description|truncatechars:80 }}</p>
+                    
+                    <div class="product-footer">
+                        <div class="product-price">{{ product.price }} ₽</div>
+                        <div class="product-actions">
+                            <form action="{% url 'shop:cart_add' product.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-cart-plus"></i> В корзину
+                                <button type="submit" class="btn-icon" title="В корзину">
+                                    <i class="ri-shopping-bag-line"></i>
                                 </button>
                             </form>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="ri-flower-line"></i>
+                <h3>Пока нет товаров</h3>
+                <p>Скоро здесь появятся прекрасные букеты</p>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        
+        <div class="section-footer">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-outline">
+                <span>Посмотреть все товары</span>
+                <i class="ri-arrow-right-line"></i>
+            </a>
+        </div>
     </div>
-    {% else %}
-    <div class="text-center py-5">
-        <i class="bi bi-flower1 display-1 text-muted"></i>
-        <p class="lead mt-3">Товары скоро появятся</p>
-    </div>
-    {% endif %}
-</div>
+</section>
 
-<!-- Призыв к действию -->
-<div class="bg-light py-5 mb-5">
-    <div class="container text-center">
-        <h2 class="mb-3">Нужен особенный букет?</h2>
-        <p class="lead mb-4">Мы создадим индивидуальную композицию по вашему эскизу или описанию</p>
-        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#consultModal">
-            <i class="bi bi-chat-dots"></i> Заказать консультацию
-        </button>
+<!-- Benefits -->
+<section class="section">
+    <div class="container">
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="ri-truck-line"></i>
+                </div>
+                <h3>Быстрая доставка</h3>
+                <p>Доставляем в день заказа при оформлении до 16:00</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="ri-secure-payment-line"></i>
+                </div>
+                <h3>Безопасная оплата</h3>
+                <p>Оплачивайте картой, наличными или онлайн</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="ri-gift-line"></i>
+                </div>
+                <h3>Подарочная упаковка</h3>
+                <p>Бесплатная упаковка для всех букетов</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="ri-customer-service-line"></i>
+                </div>
+                <h3>Поддержка 24/7</h3>
+                <p>Наш флорист всегда на связи</p>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<!-- Модальное окно консультации -->
-<div class="modal fade" id="consultModal" tabindex="-1">
-    <div class="modal-dialog">
+<!-- CTA Section -->
+<section class="section cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Нужен особенный букет?</h2>
+            <p class="cta-subtitle">Мы создадим индивидуальную композицию по вашему эскизу</p>
+            <button class="btn btn-primary" data-modal="consultation">
+                <i class="ri-chat-3-line"></i>
+                <span>Заказать консультацию</span>
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация модального окна
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'consultation-modal';
+    modal.innerHTML = `
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Заказать консультацию</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h3>Консультация флориста</h3>
+                <button class="modal-close"><i class="ri-close-line"></i></button>
             </div>
             <div class="modal-body">
-                <p>Наш флорист свяжется с вами в течение 15 минут для обсуждения деталей букета.</p>
-                <div class="mb-3">
-                    <label class="form-label">Ваш телефон</label>
-                    <input type="tel" class="form-control" placeholder="+7 (999) 123-45-67">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary">Отправить</button>
+                <p>Наш специалист свяжется с вами в течение 15 минут</p>
+                <form class="consultation-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Телефон" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span>Жду звонка</span>
+                    </button>
+                </form>
             </div>
         </div>
-    </div>
-</div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Открытие модального окна
+    document.querySelector('[data-modal="consultation"]').addEventListener('click', () => {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    
+    // Закрытие модального окна
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    
+    // Закрытие по клику вне модального окна
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Отправка формы
+    modal.querySelector('.consultation-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        showNotification('Мы скоро с вами свяжемся!', 'success');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+});
+</script>
 {% endblock %}

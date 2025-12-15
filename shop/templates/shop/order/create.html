@@ -1,270 +1,1058 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Оформление заказа - Цветочный магазин{% endblock %}
+{% block title %}Оформление заказа | Bloom{% endblock %}
+
+{% block extra_head %}
+<style>
+    .checkout-page {
+        padding: var(--space-8) 0;
+        min-height: calc(100vh - 400px);
+    }
+    
+    .checkout-header {
+        margin-bottom: var(--space-8);
+        text-align: center;
+    }
+    
+    .checkout-title {
+        font-size: var(--text-4xl);
+        margin-bottom: var(--space-2);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .checkout-subtitle {
+        color: var(--color-text-light);
+        font-size: var(--text-lg);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* Progress Steps */
+    .progress-steps {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 0 auto var(--space-8);
+        position: relative;
+    }
+    
+    .progress-steps::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 50px;
+        right: 50px;
+        height: 3px;
+        background: var(--color-border);
+        z-index: 1;
+    }
+    
+    .progress-steps.active-2::before {
+        background: var(--gradient-primary);
+    }
+    
+    .step {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        flex: 1;
+    }
+    
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--space-3);
+        background: var(--color-surface);
+        border: 3px solid var(--color-border);
+        color: var(--color-text-light);
+        font-size: var(--text-xl);
+        transition: all var(--transition-fast);
+    }
+    
+    .step.active .step-icon {
+        background: var(--gradient-primary);
+        border-color: var(--color-primary);
+        color: white;
+        transform: scale(1.1);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .step.completed .step-icon {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: white;
+    }
+    
+    .step-label {
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--color-text-light);
+    }
+    
+    .step.active .step-label {
+        color: var(--color-primary);
+    }
+    
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: var(--space-8);
+    }
+    
+    @media (max-width: 1024px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* Form Styles */
+    .form-section {
+        background: var(--color-surface);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--color-border);
+        padding: var(--space-8);
+        margin-bottom: var(--space-6);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .section-title {
+        font-size: var(--text-xl);
+        font-weight: 600;
+        margin-bottom: var(--space-6);
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding-bottom: var(--space-3);
+        border-bottom: 2px solid var(--color-border-light);
+    }
+    
+    .section-title i {
+        color: var(--color-primary);
+    }
+    
+    .form-group {
+        margin-bottom: var(--space-6);
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .form-label {
+        display: block;
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+    }
+    
+    .form-label.required::after {
+        content: " *";
+        color: #ef4444;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--text-base);
+        font-family: var(--font-sans);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-background);
+        color: var(--color-text);
+        transition: all var(--transition-fast);
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+    }
+    
+    .form-control.is-invalid {
+        border-color: #ef4444;
+    }
+    
+    .form-text {
+        display: block;
+        font-size: var(--text-xs);
+        color: var(--color-text-light);
+        margin-top: var(--space-2);
+    }
+    
+    .error-list {
+        list-style: none;
+        padding: var(--space-3) var(--space-4);
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: var(--radius-lg);
+        margin-top: var(--space-2);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .error-list li {
+        font-size: var(--text-sm);
+        color: #ef4444;
+        padding: var(--space-1) 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    
+    .error-list li::before {
+        content: "⚠";
+    }
+    
+    /* Delivery Options */
+    .delivery-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-4);
+        margin-top: var(--space-4);
+    }
+    
+    .delivery-option {
+        position: relative;
+    }
+    
+    .delivery-option input {
+        display: none;
+    }
+    
+    .delivery-card {
+        padding: var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .delivery-card:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .delivery-option input:checked + .delivery-card {
+        border-color: var(--color-primary);
+        background: rgba(var(--color-primary-rgb), 0.05);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .delivery-icon {
+        font-size: 2rem;
+        color: var(--color-primary);
+        margin-bottom: var(--space-3);
+    }
+    
+    .delivery-title {
+        font-weight: 600;
+        margin-bottom: var(--space-2);
+        color: var(--color-text);
+    }
+    
+    .delivery-price {
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-top: auto;
+    }
+    
+    .delivery-details {
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+    }
+    
+    /* Payment Methods */
+    .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--space-3);
+    }
+    
+    .payment-method {
+        position: relative;
+    }
+    
+    .payment-method input {
+        display: none;
+    }
+    
+    .payment-card {
+        padding: var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+    }
+    
+    .payment-card:hover {
+        border-color: var(--color-primary);
+    }
+    
+    .payment-method input:checked + .payment-card {
+        border-color: var(--color-primary);
+        background: rgba(var(--color-primary-rgb), 0.05);
+    }
+    
+    .payment-icon {
+        font-size: 1.5rem;
+        color: var(--color-text-light);
+    }
+    
+    .payment-title {
+        font-weight: 600;
+        font-size: var(--text-sm);
+    }
+    
+    /* Order Summary */
+    .order-summary {
+        background: var(--color-surface);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--color-border);
+        padding: var(--space-6);
+        position: sticky;
+        top: 120px;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .summary-title {
+        font-size: var(--text-xl);
+        font-weight: 600;
+        margin-bottom: var(--space-6);
+        color: var(--color-text);
+        padding-bottom: var(--space-3);
+        border-bottom: 2px solid var(--color-border-light);
+    }
+    
+    .summary-items {
+        margin-bottom: var(--space-6);
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-info {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+    
+    .item-image {
+        width: 60px;
+        height: 60px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .item-details h6 {
+        font-size: var(--text-sm);
+        font-weight: 600;
+        margin-bottom: var(--space-1);
+        color: var(--color-text);
+    }
+    
+    .item-details .quantity {
+        font-size: var(--text-xs);
+        color: var(--color-text-light);
+    }
+    
+    .item-price {
+        font-weight: 600;
+        color: var(--color-primary);
+    }
+    
+    .summary-total {
+        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        margin-top: var(--space-4);
+    }
+    
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-2) 0;
+    }
+    
+    .total-label {
+        color: var(--color-text-light);
+    }
+    
+    .total-value {
+        font-weight: 600;
+        color: var(--color-text);
+    }
+    
+    .total-row.grand-total {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        color: var(--color-primary);
+        border-top: 2px solid var(--color-border);
+        margin-top: var(--space-3);
+        padding-top: var(--space-3);
+    }
+    
+    .promo-section {
+        margin-top: var(--space-6);
+    }
+    
+    .promo-form {
+        display: flex;
+        gap: var(--space-2);
+    }
+    
+    .promo-input {
+        flex: 1;
+        padding: var(--space-3) var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-background);
+        color: var(--color-text);
+    }
+    
+    .promo-btn {
+        padding: var(--space-3) var(--space-4);
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .promo-btn:hover {
+        background: var(--color-primary-dark);
+    }
+    
+    .agree-terms {
+        margin-top: var(--space-6);
+    }
+    
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+        cursor: pointer;
+        line-height: 1.5;
+    }
+    
+    .checkbox-label input {
+        margin-top: 4px;
+        flex-shrink: 0;
+    }
+    
+    .checkbox-label a {
+        color: var(--color-primary);
+        text-decoration: none;
+    }
+    
+    .checkbox-label a:hover {
+        text-decoration: underline;
+    }
+    
+    .submit-section {
+        margin-top: var(--space-8);
+    }
+    
+    .btn-submit {
+        width: 100%;
+        padding: var(--space-4);
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: var(--radius-full);
+        color: white;
+        font-size: var(--text-lg);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .secure-notice {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        margin-top: var(--space-4);
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+    }
+    
+    .secure-notice i {
+        color: var(--color-accent);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <!-- Прогресс оформления -->
-            <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-center">
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
-                             style="width: 50px; height: 50px;">
-                            <i class="bi bi-cart-check fs-4"></i>
-                        </div>
-                        <span class="fw-bold">Корзина</span>
-                    </div>
-                    
-                    <div class="flex-grow-1">
-                        <div class="progress" style="height: 5px;">
-                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
-                             style="width: 50px; height: 50px;">
-                            <i class="bi bi-person fs-4"></i>
-                        </div>
-                        <span class="fw-bold">Данные</span>
-                    </div>
-                    
-                    <div class="flex-grow-1">
-                        <div class="progress" style="height: 5px;">
-                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto mb-2" 
-                             style="width: 50px; height: 50px;">
-                            <i class="bi bi-check2 fs-4 text-muted"></i>
-                        </div>
-                        <span class="text-muted">Подтверждение</span>
-                    </div>
+<div class="container">
+    <div class="checkout-page">
+        <!-- Заголовок -->
+        <div class="checkout-header">
+            <h1 class="checkout-title">Оформление заказа</h1>
+            <p class="checkout-subtitle">Заполните форму ниже, чтобы завершить покупку</p>
+        </div>
+
+        <!-- Прогресс -->
+        <div class="progress-steps active-2">
+            <div class="step completed">
+                <div class="step-icon">
+                    <i class="ri-shopping-bag-line"></i>
                 </div>
+                <div class="step-label">Корзина</div>
             </div>
+            <div class="step active">
+                <div class="step-icon">
+                    <i class="ri-user-line"></i>
+                </div>
+                <div class="step-label">Данные</div>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <i class="ri-check-line"></i>
+                </div>
+                <div class="step-label">Подтверждение</div>
+            </div>
+        </div>
 
-            <h1 class="mb-4">Оформление заказа</h1>
-
-            <div class="row">
-                <!-- Форма заказа -->
-                <div class="col-md-8">
-                    <div class="card mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> Контактная информация</h5>
+        <div class="checkout-grid">
+            <!-- Форма заказа -->
+            <div class="checkout-form">
+                <form method="post" id="order-form">
+                    {% csrf_token %}
+                    
+                    <!-- Контактная информация -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="ri-user-line"></i>
+                            Контактная информация
+                        </h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label required">
+                                    Имя
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <ul class="error-list">
+                                    {% for error in form.first_name.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label required">
+                                    Фамилия
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <ul class="error-list">
+                                    {% for error in form.last_name.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <form method="post" action=".">
-                                {% csrf_token %}
-                                
-                                {% if form.errors %}
-                                <div class="alert alert-danger">
-                                    <strong>Пожалуйста, исправьте ошибки:</strong>
-                                    <ul class="mb-0">
-                                        {% for field, errors in form.errors.items %}
-                                            {% for error in errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </ul>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.email.id_for_label }}" class="form-label required">
+                                    Email
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <ul class="error-list">
+                                    {% for error in form.email.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label required">
+                                    Телефон
+                                </label>
+                                {{ form.phone }}
+                                <div class="form-text">Пример: +7 (999) 123-45-67</div>
+                                {% if form.phone.errors %}
+                                <ul class="error-list">
+                                    {% for error in form.phone.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Адрес доставки -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="ri-map-pin-line"></i>
+                            Адрес доставки
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.address.id_for_label }}" class="form-label required">
+                                Полный адрес
+                            </label>
+                            {{ form.address }}
+                            <div class="form-text">Укажите город, улицу, дом, квартиру</div>
+                            {% if form.address.errors %}
+                            <ul class="error-list">
+                                {% for error in form.address.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Комментарий к доставке</label>
+                            <textarea name="delivery_comment" class="form-control" rows="3" 
+                                      placeholder="Например: позвонить за час до доставки, код домофона, этаж..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Способ доставки -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="ri-truck-line"></i>
+                            Способ доставки
+                        </h3>
+                        
+                        <div class="delivery-options">
+                            <div class="delivery-option">
+                                <input type="radio" name="delivery_type" id="delivery_courier" value="courier" checked>
+                                <label for="delivery_courier" class="delivery-card">
+                                    <div class="delivery-icon">
+                                        <i class="ri-truck-line"></i>
+                                    </div>
+                                    <div class="delivery-title">Курьерская доставка</div>
+                                    <div class="delivery-details">Сегодня с 10:00 до 22:00</div>
+                                    {% if cart.get_total_price >= 5000 %}
+                                    <div class="delivery-price">Бесплатно</div>
+                                    {% else %}
+                                    <div class="delivery-price">500 ₽</div>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            
+                            <div class="delivery-option">
+                                <input type="radio" name="delivery_type" id="delivery_pickup" value="pickup">
+                                <label for="delivery_pickup" class="delivery-card">
+                                    <div class="delivery-icon">
+                                        <i class="ri-store-line"></i>
+                                    </div>
+                                    <div class="delivery-title">Самовывоз</div>
+                                    <div class="delivery-details">г. Москва, ул. Цветочная, 15</div>
+                                    <div class="delivery-price">Бесплатно</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Способ оплаты -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="ri-bank-card-line"></i>
+                            Способ оплаты
+                        </h3>
+                        
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <input type="radio" name="payment_method" id="payment_cash" value="cash" checked>
+                                <label for="payment_cash" class="payment-card">
+                                    <div class="payment-icon">
+                                        <i class="ri-money-dollar-circle-line"></i>
+                                    </div>
+                                    <div class="payment-title">Наличные</div>
+                                </label>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <input type="radio" name="payment_method" id="payment_card" value="card">
+                                <label for="payment_card" class="payment-card">
+                                    <div class="payment-icon">
+                                        <i class="ri-bank-card-line"></i>
+                                    </div>
+                                    <div class="payment-title">Карта онлайн</div>
+                                </label>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <input type="radio" name="payment_method" id="payment_sbp" value="sbp">
+                                <label for="payment_sbp" class="payment-card">
+                                    <div class="payment-icon">
+                                        <i class="ri-smartphone-line"></i>
+                                    </div>
+                                    <div class="payment-title">СБП</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Комментарий -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="ri-chat-3-line"></i>
+                            Комментарий к заказу
+                        </h3>
+                        
+                        <div class="form-group">
+                            <textarea name="comment" class="form-control" rows="4" 
+                                      placeholder="Ваши пожелания к букету, открытке, особые условия..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Соглашения -->
+                    <div class="agree-terms">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="agree_terms" required>
+                            <span>
+                                Я согласен с 
+                                <a href="#" data-modal="terms">условиями обработки персональных данных</a> 
+                                и 
+                                <a href="#" data-modal="privacy">политикой конфиденциальности</a> *
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <!-- Кнопка отправки -->
+                    <div class="submit-section">
+                        <button type="submit" class="btn-submit" id="submit-btn">
+                            <i class="ri-check-double-line"></i>
+                            Подтвердить заказ
+                        </button>
+                        <div class="secure-notice">
+                            <i class="ri-shield-check-line"></i>
+                            <span>Ваши данные защищены</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Итог заказа -->
+            <div class="order-summary">
+                <h3 class="summary-title">Ваш заказ</h3>
+                
+                <div class="summary-items">
+                    {% for item in cart %}
+                    <div class="summary-item">
+                        <div class="item-info">
+                            <div class="item-image">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                {% else %}
+                                <div style="width: 100%; height: 100%; background: var(--color-border); display: flex; align-items: center; justify-content: center;">
+                                    <i class="ri-image-line" style="color: var(--color-text-light);"></i>
                                 </div>
                                 {% endif %}
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Имя *</label>
-                                        {{ form.first_name }}
-                                        {% if form.first_name.errors %}
-                                        <div class="text-danger small">{{ form.first_name.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Фамилия *</label>
-                                        {{ form.last_name }}
-                                        {% if form.last_name.errors %}
-                                        <div class="text-danger small">{{ form.last_name.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Email *</label>
-                                        {{ form.email }}
-                                        {% if form.email.errors %}
-                                        <div class="text-danger small">{{ form.email.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Телефон *</label>
-                                        {{ form.phone }}
-                                        <div class="form-text">Пример: +7 (999) 123-45-67</div>
-                                        {% if form.phone.errors %}
-                                        <div class="text-danger small">{{ form.phone.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Адрес доставки *</label>
-                                    {{ form.address }}
-                                    <div class="form-text">Укажите полный адрес: город, улица, дом, квартира</div>
-                                    {% if form.address.errors %}
-                                    <div class="text-danger small">{{ form.address.errors }}</div>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Комментарий к заказу</label>
-                                    <textarea name="comment" class="form-control" rows="3" 
-                                              placeholder="Например: позвонить за час до доставки..."></textarea>
-                                </div>
-                                
-                                <div class="form-check mb-4">
-                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
-                                    <label class="form-check-label" for="agreeTerms">
-                                        Я согласен с <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">
-                                            условиями обработки персональных данных
-                                        </a> *
-                                    </label>
-                                </div>
-                                
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="bi bi-check-circle"></i> Подтвердить заказ
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Способы оплаты -->
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-credit-card"></i> Способы оплаты</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 text-center mb-3">
-                                    <div class="border rounded p-3 h-100">
-                                        <i class="bi bi-cash-coin display-6 text-success"></i>
-                                        <h6 class="mt-2">Наличными</h6>
-                                        <p class="small text-muted">Курьеру при получении</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 text-center mb-3">
-                                    <div class="border rounded p-3 h-100">
-                                        <i class="bi bi-credit-card display-6 text-primary"></i>
-                                        <h6 class="mt-2">Картой онлайн</h6>
-                                        <p class="small text-muted">Безопасная оплата</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 text-center mb-3">
-                                    <div class="border rounded p-3 h-100">
-                                        <i class="bi bi-phone display-6 text-info"></i>
-                                        <h6 class="mt-2">SBP</h6>
-                                        <p class="small text-muted">Через СБП</p>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="item-details">
+                                <h6>{{ item.product.name }}</h6>
+                                <div class="quantity">{{ item.quantity }} шт.</div>
                             </div>
                         </div>
+                        <div class="item-price">{{ item.total_price }} ₽</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="summary-total">
+                    <div class="total-row">
+                        <span class="total-label">Товары ({{ cart|length }})</span>
+                        <span class="total-value">{{ cart.get_total_price }} ₽</span>
+                    </div>
+                    
+                    <div class="total-row">
+                        <span class="total-label">Доставка</span>
+                        <span class="total-value">
+                            {% if cart.get_total_price >= 5000 %}
+                            <span style="color: var(--color-accent);">Бесплатно</span>
+                            {% else %}
+                            500 ₽
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if cart.get_total_price < 5000 %}
+                    <div class="total-row">
+                        <span class="total-label">До бесплатной доставки</span>
+                        <span class="total-value" style="color: var(--color-accent);">
+                            {{ 5000|add:-cart.get_total_price }} ₽
+                        </span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="total-row grand-total">
+                        <span>Итого</span>
+                        <span>
+                            {% if cart.get_total_price >= 5000 %}
+                                {{ cart.get_total_price }} ₽
+                            {% else %}
+                                {{ cart.get_total_price|add:500 }} ₽
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
-
-                <!-- Итоги заказа -->
-                <div class="col-md-4">
-                    <div class="card sticky-top" style="top: 100px;">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0"><i class="bi bi-receipt"></i> Ваш заказ</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <h6>Товары:</h6>
-                                {% for item in cart %}
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span>{{ item.product.name }} x{{ item.quantity }}</span>
-                                    <span>{{ item.total_price }} ₽</span>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            
-                            <hr>
-                            
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
-                                    <span>Стоимость товаров:</span>
-                                    <span>{{ cart.get_total_price }} ₽</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Доставка:</span>
-                                    {% if cart.get_total_price >= 5000 %}
-                                    <span class="text-success">Бесплатно</span>
-                                    {% else %}
-                                    <span>500 ₽</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <hr>
-                            
-                            <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>К оплате:</span>
-                                <span class="text-success">
-                                    {% if cart.get_total_price >= 5000 %}
-                                        {{ cart.get_total_price }} ₽
-                                    {% else %}
-                                        {{ cart.get_total_price|add:500 }} ₽
-                                    {% endif %}
-                                </span>
-                            </div>
-                            
-                            <div class="alert alert-info mt-3 small">
-                                <i class="bi bi-clock"></i>
-                                <strong>Время доставки:</strong> сегодня с 10:00 до 22:00
-                            </div>
-                        </div>
+                
+                <!-- Промокод -->
+                <div class="promo-section">
+                    <div class="promo-form">
+                        <input type="text" placeholder="Промокод" class="promo-input" id="promo-code">
+                        <button type="button" class="promo-btn" id="apply-promo">
+                            <i class="ri-coupon-line"></i>
+                        </button>
                     </div>
-                    
-                    <!-- Помощь -->
-                    <div class="card mt-3">
-                        <div class="card-body">
-                            <h6><i class="bi bi-question-circle"></i> Нужна помощь?</h6>
-                            <p class="small mb-2">
-                                <i class="bi bi-telephone"></i> +7 (999) 123-45-67
-                            </p>
-                            <p class="small mb-0">
-                                <i class="bi bi-clock"></i> Ежедневно с 9:00 до 21:00
-                            </p>
-                        </div>
+                </div>
+                
+                <!-- Информация о доставке -->
+                <div class="delivery-info" style="margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-border);">
+                    <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                        <i class="ri-time-line" style="color: var(--color-primary);"></i>
+                        <span style="font-size: var(--text-sm); color: var(--color-text);">
+                            Доставка сегодня с 10:00 до 22:00
+                        </span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <i class="ri-customer-service-line" style="color: var(--color-primary);"></i>
+                        <span style="font-size: var(--text-sm); color: var(--color-text);">
+                            Поддержка: +7 (999) 123-45-67
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<!-- Модальное окно с условиями -->
-<div class="modal fade" id="termsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Условия обработки персональных данных</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Мы обрабатываем ваши персональные данные исключительно для выполнения вашего заказа.</p>
-                <p>Предоставляя свои данные, вы соглашаетесь на их обработку в соответствии с Федеральным законом №152-ФЗ «О персональных данных».</p>
-                <p>Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законодательством.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('order-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const promoInput = document.getElementById('promo-code');
+    const applyPromoBtn = document.getElementById('apply-promo');
+    
+    // Form submission
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="ri-loader-4-line spin"></i> Оформление...';
+    });
+    
+    // Promo code
+    applyPromoBtn.addEventListener('click', function() {
+        const code = promoInput.value.trim();
+        if (code) {
+            // Здесь должна быть логика проверки промокода
+            showNotification('Промокод применен!', 'success');
+            promoInput.value = '';
+            
+            // Обновляем итоговую сумму (пример)
+            const totalElement = document.querySelector('.grand-total .total-value span');
+            if (totalElement) {
+                const currentTotal = parseInt(totalElement.textContent.replace(/\D/g, ''));
+                const discountedTotal = Math.floor(currentTotal * 0.9); // 10% скидка
+                totalElement.textContent = discountedTotal.toLocaleString('ru-RU') + ' ₽';
+                showNotification('Скидка 10% применена!', 'success');
+            }
+        }
+    });
+    
+    promoInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            applyPromoBtn.click();
+        }
+    });
+    
+    // Phone mask
+    const phoneInput = document.getElementById('{{ form.phone.id_for_label }}');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                value = '+7 (' + value;
+                if (value.length > 7) {
+                    value = value.slice(0, 7) + ') ' + value.slice(7);
+                }
+                if (value.length > 12) {
+                    value = value.slice(0, 12) + '-' + value.slice(12);
+                }
+                if (value.length > 15) {
+                    value = value.slice(0, 15) + '-' + value.slice(15);
+                }
+            }
+            this.value = value;
+        });
+    }
+    
+    // Delivery type change
+    document.querySelectorAll('input[name="delivery_type"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const deliveryPrice = document.querySelector('.delivery-option input:checked + .delivery-card .delivery-price');
+            const totalRow = document.querySelector('.total-row:nth-child(2) .total-value');
+            const grandTotal = document.querySelector('.grand-total .total-value span');
+            
+            if (this.value === 'pickup') {
+                // Самовывоз - бесплатно
+                if (totalRow) {
+                    totalRow.innerHTML = '<span style="color: var(--color-accent);">Бесплатно</span>';
+                }
+                if (grandTotal) {
+                    const productsTotal = {{ cart.get_total_price }};
+                    grandTotal.textContent = productsTotal.toLocaleString('ru-RU') + ' ₽';
+                }
+            } else {
+                // Курьер
+                if (totalRow) {
+                    {% if cart.get_total_price >= 5000 %}
+                    totalRow.innerHTML = '<span style="color: var(--color-accent);">Бесплатно</span>';
+                    {% else %}
+                    totalRow.textContent = '500 ₽';
+                    {% endif %}
+                }
+                if (grandTotal) {
+                    const productsTotal = {{ cart.get_total_price }};
+                    {% if cart.get_total_price >= 5000 %}
+                    grandTotal.textContent = productsTotal.toLocaleString('ru-RU') + ' ₽';
+                    {% else %}
+                    grandTotal.textContent = (productsTotal + 500).toLocaleString('ru-RU') + ' ₽';
+                    {% endif %}
+                }
+            }
+        });
+    });
+    
+    // Terms modal
+    document.querySelectorAll('[data-modal]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalType = this.dataset.modal;
+            
+            let title, content;
+            if (modalType === 'terms') {
+                title = 'Условия обработки персональных данных';
+                content = `
+                    <p>Мы обрабатываем ваши персональные данные исключительно для выполнения вашего заказа.</p>
+                    <p>Предоставляя свои данные, вы соглашаетесь на их обработку в соответствии с Федеральным законом №152-ФЗ «О персональных данных».</p>
+                    <p>Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законодательством.</p>
+                `;
+            } else {
+                title = 'Политика конфиденциальности';
+                content = `
+                    <p>Мы гарантируем конфиденциальность ваших персональных данных.</p>
+                    <p>Все данные защищены современными методами шифрования.</p>
+                    <p>Мы используем cookies для улучшения работы сайта и анализа трафика.</p>
+                `;
+            }
+            
+            // Создаем модальное окно
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3>${title}</h3>
+                        <button class="modal-close"><i class="ri-close-line"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        ${content}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary modal-close-btn">Понятно</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+            
+            // Закрытие модального окна
+            modal.querySelector('.modal-close').addEventListener('click', () => {
+                modal.remove();
+                document.body.style.overflow = '';
+            });
+            
+            modal.querySelector('.modal-close-btn').addEventListener('click', () => {
+                modal.remove();
+                document.body.style.overflow = '';
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

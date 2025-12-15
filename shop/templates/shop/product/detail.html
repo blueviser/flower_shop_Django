@@ -1,140 +1,586 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}{{ product.name }} - Цветочный магазин{% endblock %}
+{% block title %}{{ product.name }} | Bloom{% endblock %}
+
+{% block extra_head %}
+<style>
+    .product-detail {
+        padding: var(--space-8) 0;
+    }
+    
+    .product-gallery {
+        position: sticky;
+        top: 100px;
+    }
+    
+    .main-image {
+        width: 100%;
+        height: 500px;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        margin-bottom: var(--space-4);
+        background: var(--color-surface);
+    }
+    
+    .main-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .main-image:hover img {
+        transform: scale(1.05);
+    }
+    
+    .thumbnail-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-3);
+    }
+    
+    .thumbnail {
+        height: 80px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all var(--transition-fast);
+    }
+    
+    .thumbnail.active {
+        border-color: var(--color-primary);
+    }
+    
+    .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .product-info {
+        padding-left: var(--space-8);
+    }
+    
+    .product-meta {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .product-category-tag {
+        padding: var(--space-1) var(--space-3);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+        text-decoration: none;
+        transition: all var(--transition-fast);
+    }
+    
+    .product-category-tag:hover {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+    
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    
+    .rating-stars {
+        color: #ffc107;
+    }
+    
+    .rating-count {
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
+    }
+    
+    .product-description-content {
+        margin: var(--space-6) 0;
+    }
+    
+    .product-description-content p {
+        margin-bottom: var(--space-4);
+        line-height: 1.7;
+        color: var(--color-text);
+    }
+    
+    .product-actions {
+        background: var(--color-surface);
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        margin-top: var(--space-6);
+    }
+    
+    .price-section {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+    }
+    
+    .current-price {
+        font-size: var(--text-4xl);
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .old-price {
+        font-size: var(--text-xl);
+        color: var(--color-text-light);
+        text-decoration: line-through;
+    }
+    
+    .quantity-section {
+        margin-bottom: var(--space-6);
+    }
+    
+    .quantity-label {
+        display: block;
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+    }
+    
+    .quantity-control-large {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        max-width: 200px;
+    }
+    
+    .quantity-btn-large {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-full);
+        background: var(--color-background);
+        border: 2px solid var(--color-border);
+        color: var(--color-text);
+        font-size: var(--text-xl);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .quantity-btn-large:hover {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+    
+    .quantity-input-large {
+        width: 80px;
+        text-align: center;
+        padding: var(--space-3);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-background);
+        color: var(--color-text);
+        font-size: var(--text-lg);
+        font-weight: 600;
+    }
+    
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+    
+    .availability-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        font-weight: 600;
+    }
+    
+    .availability-badge.in-stock {
+        background: rgba(var(--color-accent), 0.1);
+        color: var(--color-accent);
+    }
+    
+    .availability-badge.out-of-stock {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+    }
+    
+    .delivery-info {
+        background: var(--color-surface);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        margin-top: var(--space-8);
+    }
+    
+    .delivery-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .delivery-item:last-child {
+        border-bottom: none;
+    }
+    
+    .delivery-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: var(--color-primary-light);
+        color: var(--color-primary);
+        border-radius: var(--radius-full);
+    }
+    
+    .related-products {
+        margin-top: var(--space-12);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Хлебные крошки -->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Главная</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Каталог</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'shop:product_list_by_category' product.category.slug %}">
-                {{ product.category.name }}
-            </a></li>
-            <li class="breadcrumb-item active">{{ product.name }}</li>
-        </ol>
-    </nav>
-
-    <div class="row">
-        <!-- Изображение товара -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body text-center">
+<div class="container">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <i class="ri-arrow-right-s-line"></i>
+        <a href="{% url 'shop:product_list' %}">Каталог</a>
+        <i class="ri-arrow-right-s-line"></i>
+        <a href="{% url 'shop:product_list_by_category' product.category.slug %}">
+            {{ product.category.name }}
+        </a>
+        <i class="ri-arrow-right-s-line"></i>
+        <span>{{ product.name }}</span>
+    </div>
+    
+    <div class="product-detail">
+        <div class="content-grid">
+            <!-- Gallery -->
+            <div class="product-gallery">
+                <div class="main-image" id="main-image">
                     {% if product.image %}
-                    <img src="{{ product.image.url }}" class="img-fluid rounded" 
-                         alt="{{ product.name }}" style="max-height: 500px;">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" id="current-image">
                     {% else %}
-                    <div class="bg-light rounded d-flex align-items-center justify-content-center" 
-                         style="height: 500px;">
-                        <span class="text-muted">Нет изображения</span>
+                    <div class="image-placeholder">
+                        <i class="ri-image-line"></i>
                     </div>
                     {% endif %}
+                </div>
+                
+                <div class="thumbnail-grid">
+                    {% if product.image %}
+                    <div class="thumbnail active" data-image="{{ product.image.url }}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Additional images can be added here -->
+                    {% for i in "123" %}
+                    <div class="thumbnail" data-image="/static/images/product-placeholder-{{ i }}.jpg">
+                        <img src="/static/images/product-placeholder-{{ i }}.jpg" alt="Дополнительное фото {{ i }}">
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
             
-            <!-- Дополнительные изображения можно добавить здесь -->
-        </div>
-
-        <!-- Информация о товаре -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h1 class="card-title">{{ product.name }}</h1>
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="product-header">
+                    <h1 class="product-title">{{ product.name }}</h1>
                     
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="h2 text-primary">{{ product.price }} ₽</span>
-                        {% if product.available %}
-                        <span class="badge bg-success fs-6">В наличии</span>
-                        {% else %}
-                        <span class="badge bg-secondary fs-6">Нет в наличии</span>
+                    <div class="product-meta">
+                        <a href="{% url 'shop:product_list_by_category' product.category.slug %}" 
+                           class="product-category-tag">
+                            {{ product.category.name }}
+                        </a>
+                        
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                            </div>
+                            <span class="rating-count">(42 отзыва)</span>
+                        </div>
+                        
+                        <span class="availability-badge {% if product.available %}in-stock{% else %}out-of-stock{% endif %}">
+                            <i class="ri-{% if product.available %}checkbox-circle-line{% else %}close-circle-line{% endif %}"></i>
+                            {% if product.available %}В наличии{% else %}Нет в наличии{% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="product-description-content">
+                    {{ product.description|linebreaks }}
+                    
+                    <div class="product-features">
+                        <h4>Особенности:</h4>
+                        <ul>
+                            <li>Свежие цветы от проверенных поставщиков</li>
+                            <li>Профессиональная сборка букета</li>
+                            <li>Бесплатная подарочная упаковка</li>
+                            <li>Карточка с пожеланиями</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Actions Panel -->
+                <div class="product-actions">
+                    <div class="price-section">
+                        <div class="current-price">{{ product.price }} ₽</div>
+                        {% if product.old_price %}
+                        <div class="old-price">{{ product.old_price }} ₽</div>
                         {% endif %}
                     </div>
                     
-                    <div class="mb-3">
-                        <span class="text-muted">Категория:</span>
-                        <a href="{% url 'shop:product_list_by_category' product.category.slug %}" 
-                           class="badge bg-info text-decoration-none">
-                            {{ product.category.name }}
-                        </a>
-                    </div>
-
-                    <hr>
-
-                    <h5>Описание</h5>
-                    <p class="card-text">{{ product.description|linebreaks }}</p>
-
-                    <hr>
-
-                    <!-- Форма добавления в корзину -->
                     {% if product.available %}
-                    <form action="{% url 'shop:cart_add' product.id %}" method="post" class="mt-4">
+                    <form action="{% url 'shop:cart_add' product.id %}" method="post" id="add-to-cart-form">
                         {% csrf_token %}
-                        <div class="row g-3 align-items-center">
-                            <div class="col-auto">
-                                <label for="quantity" class="form-label">Количество:</label>
-                            </div>
-                            <div class="col-auto">
-                                <input type="number" name="quantity" id="quantity" 
-                                       value="1" min="1" max="99" 
-                                       class="form-control" style="width: 100px;">
-                            </div>
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-cart-plus"></i> Добавить в корзину
+                        
+                        <div class="quantity-section">
+                            <label class="quantity-label">Количество</label>
+                            <div class="quantity-control-large">
+                                <button type="button" class="quantity-btn-large quantity-minus" onclick="updateQuantity(-1)">
+                                    <i class="ri-subtract-line"></i>
+                                </button>
+                                <input type="number" name="quantity" value="1" min="1" max="99" 
+                                       class="quantity-input-large" id="quantity-input">
+                                <button type="button" class="quantity-btn-large quantity-plus" onclick="updateQuantity(1)">
+                                    <i class="ri-add-line"></i>
                                 </button>
                             </div>
                         </div>
-                        <input type="hidden" name="update" value="false">
+                        
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ri-shopping-bag-line"></i>
+                                <span>Добавить в корзину</span>
+                            </button>
+                            
+                            <button type="button" class="btn btn-outline wishlist-btn-large">
+                                <i class="ri-heart-line"></i>
+                                <span>В избранное</span>
+                            </button>
+                        </div>
                     </form>
                     {% else %}
-                    <div class="alert alert-warning mt-4">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Этот товар временно отсутствует в наличии
+                    <div class="out-of-stock-message">
+                        <p>Этот товар временно отсутствует. Оставьте свой email, и мы сообщим, когда он появится:</p>
+                        <form class="notify-form">
+                            <div class="input-group">
+                                <input type="email" placeholder="Ваш email" required>
+                                <button type="submit" class="btn btn-primary">Уведомить</button>
+                            </div>
+                        </form>
                     </div>
                     {% endif %}
-
-                    <!-- Информация о доставке -->
-                    <div class="card mt-4">
-                        <div class="card-body bg-light">
-                            <h6><i class="bi bi-truck"></i> Условия доставки</h6>
-                            <ul class="small mb-0">
-                                <li>Бесплатная доставка при заказе от 5000 ₽</li>
-                                <li>Доставка в день заказа при оформлении до 16:00</li>
-                                <li>Возможность самовывоза из нашего магазина</li>
-                            </ul>
+                </div>
+                
+                <!-- Delivery Info -->
+                <div class="delivery-info">
+                    <h4>Доставка и оплата</h4>
+                    <div class="delivery-items">
+                        <div class="delivery-item">
+                            <div class="delivery-icon">
+                                <i class="ri-truck-line"></i>
+                            </div>
+                            <div>
+                                <strong>Бесплатная доставка</strong>
+                                <p>При заказе от 5000 ₽. В день заказа при оформлении до 16:00</p>
+                            </div>
+                        </div>
+                        
+                        <div class="delivery-item">
+                            <div class="delivery-icon">
+                                <i class="ri-credit-card-line"></i>
+                            </div>
+                            <div>
+                                <strong>Способы оплаты</strong>
+                                <p>Картой онлайн, наличными курьеру, Apple/Google Pay</p>
+                            </div>
+                        </div>
+                        
+                        <div class="delivery-item">
+                            <div class="delivery-icon">
+                                <i class="ri-shield-check-line"></i>
+                            </div>
+                            <div>
+                                <strong>Гарантия свежести</strong>
+                                <p>Если цветы завянут в течение 3 дней — вернем деньги</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Похожие товары -->
-    {% if related_products %}
-    <div class="mt-5">
-        <h3>Похожие товары</h3>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            {% for related in related_products %}
-            <div class="col">
-                <div class="card h-100 product-card">
-                    {% if related.image %}
-                    <img src="{{ related.image.url }}" class="card-img-top" 
-                         alt="{{ related.name }}" style="height: 200px; object-fit: cover;">
+        
+        <!-- Related Products -->
+        {% if related_products %}
+        <div class="related-products">
+            <div class="section-header">
+                <h2 class="section-title">Похожие букеты</h2>
+                <p class="section-subtitle">Вам также может понравиться</p>
+            </div>
+            
+            <div class="products-grid">
+                {% for related in related_products %}
+                <div class="product-card">
+                    {% if related.available %}
+                    <span class="product-badge">В наличии</span>
                     {% endif %}
-                    <div class="card-body">
-                        <h6 class="card-title">{{ related.name }}</h6>
-                        <p class="card-text text-primary">{{ related.price }} ₽</p>
-                        <a href="{% url 'shop:product_detail' related.slug %}" 
-                           class="btn btn-outline-primary btn-sm w-100">
-                            Смотреть
-                        </a>
+                    
+                    <div class="product-image">
+                        {% if related.image %}
+                        <img src="{{ related.image.url }}" alt="{{ related.name }}">
+                        {% else %}
+                        <div class="product-image-placeholder">
+                            <i class="ri-image-line"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-content">
+                        <h3 class="product-title">
+                            <a href="{% url 'shop:product_detail' related.slug %}">{{ related.name }}</a>
+                        </h3>
+                        <span class="product-category">{{ related.category.name }}</span>
+                        
+                        <div class="product-footer">
+                            <div class="product-price">{{ related.price }} ₽</div>
+                            <div class="product-actions">
+                                <a href="{% url 'shop:product_detail' related.slug %}" class="btn-icon" title="Подробнее">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Переключение изображений
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+            const imageUrl = this.dataset.image;
+            document.getElementById('current-image').src = imageUrl;
+            
+            // Обновляем активный класс
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Управление количеством
+    window.updateQuantity = function(change) {
+        const input = document.getElementById('quantity-input');
+        let value = parseInt(input.value) || 1;
+        value = Math.max(1, Math.min(99, value + change));
+        input.value = value;
+    };
+    
+    // Добавление в корзину с AJAX
+    const addToCartForm = document.getElementById('add-to-cart-form');
+    if (addToCartForm) {
+        addToCartForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем счетчик корзины
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        const currentCount = parseInt(cartCount.textContent) || 0;
+                        const quantity = parseInt(formData.get('quantity')) || 1;
+                        cartCount.textContent = currentCount + quantity;
+                    }
+                    
+                    // Показываем уведомление
+                    showNotification(data.message || 'Товар добавлен в корзину', 'success');
+                    
+                    // Анимация
+                    const cartBtn = document.querySelector('.cart-btn');
+                    cartBtn.classList.add('cart-icon-animation');
+                    setTimeout(() => {
+                        cartBtn.classList.remove('cart-icon-animation');
+                    }, 500);
+                    
+                    // Перенаправляем в корзину через 1.5 секунды
+                    setTimeout(() => {
+                        window.location.href = "{% url 'shop:cart_detail' %}";
+                    }, 1500);
+                } else {
+                    showNotification(data.message || 'Ошибка при добавлении в корзину', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Ошибка при добавлении в корзину', 'error');
+            });
+        });
+    }
+    
+    // Добавление в избранное
+    document.querySelector('.wishlist-btn-large').addEventListener('click', function() {
+        this.classList.toggle('active');
+        const icon = this.querySelector('i');
+        const text = this.querySelector('span');
+        
+        if (this.classList.contains('active')) {
+            icon.className = 'ri-heart-fill';
+            text.textContent = 'В избранном';
+            showNotification('Добавлено в избранное', 'success');
+        } else {
+            icon.className = 'ri-heart-line';
+            text.textContent = 'В избранное';
+            showNotification('Удалено из избранного', 'info');
+        }
+        
+        // Анимация
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+    
+    // Форма уведомления о поступлении
+    document.querySelector('.notify-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        showNotification('Мы сообщим вам, когда товар появится в наличии', 'success');
+        this.reset();
+    });
+});
+</script>
 {% endblock %}

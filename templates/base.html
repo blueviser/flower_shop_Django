@@ -1,125 +1,333 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Цветочный магазин{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <style>
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                        url('https://images.unsplash.com/photo-1487956382158-bb926046304a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 100px 0;
-        }
-        .product-card {
-            transition: transform 0.3s;
-            border: none;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-        .category-card {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        .category-card-overlay {
-            position: absolute;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            width: 100%;
-            padding: 10px;
-        }
-        .footer {
-            background: #f8f9fa;
-            padding: 40px 0;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>{% block title %}Bloom | Современный цветочный магазин{% endblock %}</title>
+    
+    <!-- Мета теги -->
+    <meta name="description" content="Премиальные цветы с доставкой в день заказа. Современный подход к флористике.">
+    <meta name="keywords" content="цветы, букеты, доставка цветов, флористика, подарки">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/main.min.css">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#8B5FBF">
+    
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{% url 'shop:home' %}">
-                <i class="bi bi-flower1 me-2"></i>Цветочный магазин
-            </a>
-            
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <!-- ВАРИАНТ 1: с пространством имен shop: -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:home' %}">
-                            <i class="bi bi-house-door"></i> Главная
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:product_list' %}">
-                            <i class="bi bi-shop"></i> Каталог
-                        </a>
-                    </li>
-                </ul>
-                <div class="d-flex">
-                    <a href="{% url 'shop:cart_detail' %}" class="btn btn-outline-primary position-relative">
-                        <i class="bi bi-cart3"></i> Корзина
-                        {% with total_items=cart|length %}
-                            {% if total_items > 0 %}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ total_items }}
-                                </span>
-                            {% endif %}
-                        {% endwith %}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" aria-label="Переключить тему">
+        <i class="ri-sun-line sun-icon"></i>
+        <i class="ri-moon-line moon-icon"></i>
+    </button>
 
-    <div style="padding-top: 80px;">
-        {% block content %}{% endblock %}
+    <!-- Back to Top -->
+    <button class="back-to-top" aria-label="Наверх">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-content">
+            <div class="flower-loader">
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="petal"></div>
+                <div class="center"></div>
+            </div>
+            <span class="loading-text">Bloom</span>
+        </div>
     </div>
 
-    <!-- Футер -->
-    <footer class="footer mt-5">
+    <!-- Header -->
+    <header class="header">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Цветочный магазин</h5>
-                    <p>Доставляем красоту и настроение с 2010 года.</p>
+            <nav class="nav">
+                <!-- Logo -->
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32">
+                            <path d="M16,3 C12,3 8,7 8,11 C8,15 12,19 16,23 C20,19 24,15 24,11 C24,7 20,3 16,3 Z" fill="currentColor"/>
+                            <circle cx="16" cy="11" r="4" fill="#FFB6C1"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">Bloom</span>
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="menu-toggle" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <!-- Navigation -->
+                <div class="nav-menu">
+                    <div class="nav-links">
+                        <a href="/" class="nav-link active" data-page="home">
+                            <i class="ri-home-4-line"></i>
+                            <span>Главная</span>
+                        </a>
+                        <a href="{% url 'shop:product_list' %}" class="nav-link" data-page="shop">
+                            <i class="ri-store-2-line"></i>
+                            <span>Магазин</span>
+                        </a>
+                        <a href="#collections" class="nav-link" data-page="collections">
+                            <i class="ri-flower-line"></i>
+                            <span>Коллекции</span>
+                        </a>
+                        <a href="#about" class="nav-link" data-page="about">
+                            <i class="ri-information-line"></i>
+                            <span>О нас</span>
+                        </a>
+                        <a href="#contact" class="nav-link" data-page="contact">
+                            <i class="ri-customer-service-line"></i>
+                            <span>Контакты</span>
+                        </a>
+                    </div>
+
+                    <!-- User Actions -->
+                    <div class="nav-actions">
+                        <button class="action-btn search-btn" aria-label="Поиск">
+                            <i class="ri-search-line"></i>
+                        </button>
+                        
+                        <a href="{% url 'shop:cart_detail' %}" class="action-btn cart-btn" aria-label="Корзина">
+                            <i class="ri-shopping-bag-line"></i>
+                            {% if cart and cart|length > 0 %}
+                            <span class="cart-count">{{ cart|length }}</span>
+                            {% endif %}
+                        </a>
+                        
+                        <button class="action-btn user-btn" aria-label="Профиль">
+                            <i class="ri-user-line"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Контакты</h5>
-                    <p><i class="bi bi-telephone"></i> +7 (999) 123-45-67</p>
-                    <p><i class="bi bi-envelope"></i> info@flower-shop.ru</p>
+
+                <!-- Search Overlay -->
+                <div class="search-overlay">
+                    <div class="search-container">
+                        <div class="search-header">
+                            <h3>Поиск букетов</h3>
+                            <button class="close-search" aria-label="Закрыть поиск">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
+                        <form action="{% url 'shop:product_list' %}" method="get" class="search-form">
+                            <div class="search-input-group">
+                                <i class="ri-search-line"></i>
+                                <input type="text" name="q" placeholder="Что вы ищете? Например: 'розы', 'свадебный букет'..." autocomplete="off">
+                                <button type="submit" class="search-submit">
+                                    <i class="ri-arrow-right-line"></i>
+                                </button>
+                            </div>
+                            <div class="search-suggestions">
+                                <span class="suggestion-title">Популярные запросы:</span>
+                                <a href="{% url 'shop:product_list' %}?q=розы" class="suggestion-tag">Розы</a>
+                                <a href="{% url 'shop:product_list' %}?q=тюльпаны" class="suggestion-tag">Тюльпаны</a>
+                                <a href="{% url 'shop:product_list' %}?q=свадебный" class="suggestion-tag">Свадебные</a>
+                                <a href="{% url 'shop:product_list' %}?q=подарочный" class="suggestion-tag">Подарочные</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Мы в соцсетях</h5>
-                    <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="btn btn-outline-primary"><i class="bi bi-telegram"></i></a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Floating CTA -->
+    <div class="floating-cta">
+        <a href="{% url 'shop:product_list' %}" class="floating-btn" aria-label="Смотреть букеты">
+            <i class="ri-flower-line"></i>
+            <span>Выбрать букет</span>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Brand -->
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo">
+                        <div class="logo-icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32">
+                                <path d="M16,3 C12,3 8,7 8,11 C8,15 12,19 16,23 C20,19 24,15 24,11 C24,7 20,3 16,3 Z" fill="currentColor"/>
+                                <circle cx="16" cy="11" r="4" fill="#FFB6C1"/>
+                            </svg>
+                        </div>
+                        <span>Bloom</span>
+                    </a>
+                    <p class="footer-tagline">Искусство в каждом лепестке</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Telegram">
+                            <i class="ri-telegram-line"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="VK">
+                            <i class="ri-vk-line"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="WhatsApp">
+                            <i class="ri-whatsapp-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title">Магазин</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'shop:product_list' %}">Все букеты</a></li>
+                        <li><a href="{% url 'shop:product_list_by_category' 'roses' %}">Розы</a></li>
+                        <li><a href="{% url 'shop:product_list_by_category' 'wedding' %}">Свадебные</a></li>
+                        <li><a href="{% url 'shop:product_list_by_category' 'gift' %}">Подарочные</a></li>
+                        <li><a href="{% url 'shop:product_list_by_category' 'bouquets' %}">Авторские</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="footer-section">
+                    <h4 class="footer-title">Поддержка</h4>
+                    <ul class="footer-links">
+                        <li><a href="#faq">Частые вопросы</a></li>
+                        <li><a href="#delivery">Доставка и оплата</a></li>
+                        <li><a href="#care">Уход за цветами</a></li>
+                        <li><a href="#return">Возврат и обмен</a></li>
+                        <li><a href="#contact">Связаться с нами</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="footer-section">
+                    <h4 class="footer-title">Контакты</h4>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <i class="ri-phone-line"></i>
+                            <a href="tel:+79991234567">+7 (999) 123-45-67</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="ri-mail-line"></i>
+                            <a href="mailto:hello@bloom.ru">hello@bloom.ru</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="ri-map-pin-line"></i>
+                            <span>г. Москва, ул. Цветочная, 15</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="ri-time-line"></i>
+                            <span>Ежедневно 9:00–22:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-section newsletter">
+                    <h4 class="footer-title">Рассылка</h4>
+                    <p class="newsletter-text">Подпишитесь на новости и получите скидку 15% на первый заказ</p>
+                    <form class="newsletter-form">
+                        <div class="input-group">
+                            <input type="email" placeholder="Ваш email" required>
+                            <button type="submit" class="newsletter-btn">
+                                <i class="ri-send-plane-line"></i>
+                            </button>
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            <span>Согласен с политикой конфиденциальности</span>
+                        </label>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2024 Bloom. Все права защищены.</p>
+                    <div class="footer-legal">
+                        <a href="#privacy">Политика конфиденциальности</a>
+                        <a href="#terms">Условия использования</a>
+                    </div>
+                </div>
+                <div class="payment-methods">
+                    <i class="ri-visa-line" title="Visa"></i>
+                    <i class="ri-mastercard-line" title="MasterCard"></i>
+                    <i class="ri-apple-pay-line" title="Apple Pay"></i>
+                    <i class="ri-google-pay-line" title="Google Pay"></i>
+                    <i class="ri-money-dollar-circle-line" title="Наличные"></i>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Notifications -->
+    <div class="notifications"></div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script src="/static/js/main.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+    
     <script>
-        // Обновление количества товара в корзине
-        document.querySelectorAll('.update-quantity').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const form = this.closest('form');
-                form.submit();
-            });
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Уведомления
+            window.showNotification = function(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <i class="ri-${type === 'success' ? 'checkbox-circle-line' : 'error-warning-line'}"></i>
+                    <span>${message}</span>
+                    <button class="notification-close"><i class="ri-close-line"></i></button>
+                `;
+                
+                document.querySelector('.notifications').appendChild(notification);
+                
+                setTimeout(() => notification.classList.add('show'), 10);
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+                
+                notification.querySelector('.notification-close').onclick = () => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                };
+            };
+            
+            // Проверка корзины
+            {% if messages %}
+                {% for message in messages %}
+                    showNotification('{{ message }}', '{{ message.tags }}');
+                {% endfor %}
+            {% endif %}
         });
     </script>
 </body>
